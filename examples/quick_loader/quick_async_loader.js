@@ -1,8 +1,8 @@
 (function (w, d) {
-    var c = w.Countly || (w.Countly = {});
+    var c = w.Countbase || (w.Countbase = {});
     var bootstrapMeta = {
         version: "1.0.0",
-        name: "countly-unified-loader"
+        name: "countbase-unified-loader"
     };
     var pendingCalls = [];
     var isLoading = false;
@@ -20,7 +20,7 @@
 
     function addStub(target, methodName, methodPath) {
         var stub = queueCall(methodPath || methodName);
-        stub.__isCountlyStub = true;
+        stub.__isCountbaseStub = true;
         target[methodName] = stub;
     }
 
@@ -32,13 +32,13 @@
         }
         var methodName = chunks[chunks.length - 1];
         var method = context && context[methodName];
-        if (typeof method === "function" && !method.__isCountlyStub) {
+        if (typeof method === "function" && !method.__isCountbaseStub) {
             method.apply(context, args || []);
         }
     }
 
     function flushPendingCalls() {
-        var live = w.Countly;
+        var live = w.Countbase;
         var queue = pendingCalls.slice();
         pendingCalls = [];
         for (var idx = 0; idx < queue.length; idx++) {
@@ -62,7 +62,7 @@
             isLoaded = true;
             isLoading = false;
 
-            var live = w.Countly;
+            var live = w.Countbase;
             if (live && typeof live.init === "function") {
                 live.init(initConfig || {});
             }
@@ -70,7 +70,7 @@
         };
         script.onerror = function () {
             isLoading = false;
-            console.error("Countly loader failed to load SDK from:", scriptUrl);
+            console.error("Countbase loader failed to load SDK from:", scriptUrl);
         };
 
         var first = d.getElementsByTagName("script")[0];
@@ -145,7 +145,7 @@
         }
 
         initConfig = config;
-        var sdkUrl = c.sdk_url || "https://cdn.jsdelivr.net/npm/countly-sdk-web@latest/lib/countly.min.js";
+        var sdkUrl = c.sdk_url || "https://cdn.jsdelivr.net/npm/countbase-sdk-web@latest/lib/countbase.min.js";
         loadSdk(sdkUrl);
         return c;
     };

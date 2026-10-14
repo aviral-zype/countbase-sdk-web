@@ -30,25 +30,25 @@
     "docdash": {
         "static": true,
         "sort": true,
-        "disqus": "countly-documentation",
+        "disqus": "countbase-documentation",
 		"openGraph": {
-			"title": "Countly Web SDK Documentation",
+			"title": "Countbase Web SDK Documentation",
 			"type": "website",
 			"image": "",
-			"site_name": "Countly Web SDK Documentation",
-			"url": "https://countly.github.io/countly-sdk-web/"
+			"site_name": "Countbase Web SDK Documentation",
+			"url": "https://countbase.github.io/countbase-sdk-web/"
 		},
 		"meta": {
-			"title": "Countly Web SDK Documentation",
-			"description": "JSDoc generated Countly Web SDK documentation",
-			"keyword": "countly, web, sdk, jsdoc, doc, documentation"
+			"title": "Countbase Web SDK Documentation",
+			"description": "JSDoc generated Countbase Web SDK documentation",
+			"keyword": "countbase, web, sdk, jsdoc, doc, documentation"
 		},
         "search": true,
         "collapse": true,
         "typedefs": true,
         "removeQuotes": "all",
         "menu":{
-            "Countly":{
+            "Countbase":{
                 "href":"https://countly.com/"
             },
             "Web SDK Docs":{

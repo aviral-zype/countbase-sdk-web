@@ -1,9 +1,9 @@
 /* eslint-disable require-jsdoc */
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper");
 
 function initMain(shouldStopRequests) {
-    Countly.init({
+    Countbase.init({
         app_key: "YOUR_APP_KEY",
         url: "https://your.domain.count.ly",
         app_version: "1.0",
@@ -16,18 +16,18 @@ describe("Remaining requests tests ", () => {
     it("Checks the requests for rr", () => {
         hp.haltAndClearStorage(() => {
             initMain(false);
-            Countly.begin_session();
-            Countly.end_session(undefined, true);
+            Countbase.begin_session();
+            Countbase.end_session(undefined, true);
 
             cy.wait(1000).then(() => {
-                var queues = Countly._internals.getLocalQueues();
+                var queues = Countbase._internals.getLocalQueues();
                 expect(queues.eventQ.length).to.equal(0);
                 expect(queues.requestQ.length).to.equal(3);
                 expect(queues.requestQ[0]["begin_session"]).to.equal(1);
                 expect(queues.requestQ[1]["end_session"]).to.equal(1);
                 expect(JSON.parse(queues.requestQ[2]["events"])[0].key).to.equal("[CLY]_orientation");
 
-                var requests = Countly._internals.testingGetRequests();
+                var requests = Countbase._internals.testingGetRequests();
                 expect(requests.length).to.equal(3);
                 expect(requests[0].params["rr"]).to.equal(undefined);
                 expect(requests[1].params["rr"]).to.equal(undefined);
@@ -41,8 +41,8 @@ describe("Remaining requests tests ", () => {
             initMain(true);
 
             // Create a session and end it
-            Countly.begin_session();
-            Countly.end_session(undefined, true);
+            Countbase.begin_session();
+            Countbase.end_session(undefined, true);
             cy.fetch_local_request_queue().then((rq) => {
                 expect(rq.length).to.equal(3);
                 expect(rq[0].rr).to.equal(undefined);
@@ -50,7 +50,7 @@ describe("Remaining requests tests ", () => {
                 expect(rq[2].rr).to.equal(undefined);
 
                 // Change ID
-                Countly.change_id("newID");
+                Countbase.change_id("newID");
                 cy.fetch_local_request_queue().then((rq2) => {
                     // We expect 4 requests in queue: begin_session, end_session, orientation and change ID
                     cy.log(rq2);

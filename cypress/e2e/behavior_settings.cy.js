@@ -1,9 +1,9 @@
 /* eslint-disable require-jsdoc */
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper");
 
 function initWithBehavior(settings) {
-    Countly.init({
+    Countbase.init({
         app_key: hp.appKey,
         url: "https://example.count.ly",
         debug: true,
@@ -27,9 +27,9 @@ describe("Behavior settings filters", () => {
     it("event blacklist blocks", () => {
         hp.haltAndClearStorage(() => {
             initWithBehavior({ c: { eb: ["blocked"] } });
-            Countly.add_event({ key: "blocked", count: 1 });
-            Countly.add_event({ key: "other", count: 1 });
-            Countly.add_event({ key: "kept", count: 1 });
+            Countbase.add_event({ key: "blocked", count: 1 });
+            Countbase.add_event({ key: "other", count: 1 });
+            Countbase.add_event({ key: "kept", count: 1 });
             cy.wait(200).then(() => collectEventKeysFromQueues()).then((events) => {
                 const keys = events.map((e) => e.key);
                 expect(keys).to.include("other");
@@ -42,9 +42,9 @@ describe("Behavior settings filters", () => {
     it("event whitelist allows only listed", () => {
         hp.haltAndClearStorage(() => {
             initWithBehavior({ c: { ew: ["kept"] } });
-            Countly.add_event({ key: "blocked", count: 1 });
-            Countly.add_event({ key: "other", count: 1 });
-            Countly.add_event({ key: "kept", count: 1 });
+            Countbase.add_event({ key: "blocked", count: 1 });
+            Countbase.add_event({ key: "other", count: 1 });
+            Countbase.add_event({ key: "kept", count: 1 });
             cy.wait(200).then(() => collectEventKeysFromQueues()).then((events) => {
                 const keys = events.map((e) => e.key);
                 expect(keys).to.include("kept");
@@ -57,7 +57,7 @@ describe("Behavior settings filters", () => {
     it("global segmentation blacklist/whitelist applied", () => {
         hp.haltAndClearStorage(() => {
             initWithBehavior({ c: { sb: ["secret"] } });
-            Countly.add_event({ key: "segtest", count: 1, segmentation: { secret: "x", keep: "y", other: "z" } });
+            Countbase.add_event({ key: "segtest", count: 1, segmentation: { secret: "x", keep: "y", other: "z" } });
             cy.wait(200).then(() => collectEventKeysFromQueues()).then((events) => {
                 expect(events.length).to.be.greaterThan(0);
                 const seg = events[0].segmentation;
@@ -71,7 +71,7 @@ describe("Behavior settings filters", () => {
     it("global segmentation whitelist applied", () => {
         hp.haltAndClearStorage(() => {
             initWithBehavior({ c: { sw: ["keep"] } });
-            Countly.add_event({ key: "segtest", count: 1, segmentation: { secret: "x", keep: "y", other: "z" } });
+            Countbase.add_event({ key: "segtest", count: 1, segmentation: { secret: "x", keep: "y", other: "z" } });
             cy.wait(200).then(() => collectEventKeysFromQueues()).then((events) => {
                 expect(events.length).to.be.greaterThan(0);
                 const seg = events[0].segmentation;
@@ -85,8 +85,8 @@ describe("Behavior settings filters", () => {
     it("event-specific segmentation filters respected", () => {
         hp.haltAndClearStorage(() => {
             initWithBehavior({ c: { esb: { purchase: ["card"] } } });
-            Countly.add_event({ key: "purchase", count: 1, segmentation: { card: "1111", keep: "ok", drop: "no" } });
-            Countly.add_event({ key: "not-purchase", count: 1, segmentation: { card: "1111", keep: "ok", drop: "no" } });
+            Countbase.add_event({ key: "purchase", count: 1, segmentation: { card: "1111", keep: "ok", drop: "no" } });
+            Countbase.add_event({ key: "not-purchase", count: 1, segmentation: { card: "1111", keep: "ok", drop: "no" } });
             cy.wait(200).then(() => collectEventKeysFromQueues()).then((events) => {
                 const seg = events.find((e) => e.key === "purchase").segmentation;
                 expect(seg).to.have.property("keep", "ok");
@@ -103,8 +103,8 @@ describe("Behavior settings filters", () => {
     it("event-specific segmentation whitelist respected", () => {
         hp.haltAndClearStorage(() => {
             initWithBehavior({ c: { esw: { purchase: ["keep"] } } });
-            Countly.add_event({ key: "purchase", count: 1, segmentation: { card: "1111", keep: "ok", drop: "no" } });
-            Countly.add_event({ key: "not-purchase", count: 1, segmentation: { card: "1111", keep: "ok", drop: "no" } });
+            Countbase.add_event({ key: "purchase", count: 1, segmentation: { card: "1111", keep: "ok", drop: "no" } });
+            Countbase.add_event({ key: "not-purchase", count: 1, segmentation: { card: "1111", keep: "ok", drop: "no" } });
             cy.wait(200).then(() => collectEventKeysFromQueues()).then((events) => {
                 const seg = events.find((e) => e.key === "purchase").segmentation;
                 expect(seg).to.have.property("keep", "ok");
@@ -121,7 +121,7 @@ describe("Behavior settings filters", () => {
     it("user property whitelist applied", () => {
         hp.haltAndClearStorage(() => {
             initWithBehavior({ c: { upw: ["allowed", "name"] } });
-            Countly.user_details({ custom: { blocked: "x", allowed: "y", other: "z" }, name: "John", age: 30 });
+            Countbase.user_details({ custom: { blocked: "x", allowed: "y", other: "z" }, name: "John", age: 30 });
             cy.wait(200).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     const userReq = rq.find((r) => r.user_details);
@@ -139,7 +139,7 @@ describe("Behavior settings filters", () => {
     it("user property blacklist applied", () => {
         hp.haltAndClearStorage(() => {
             initWithBehavior({ c: { upb: ["blocked", "age"] } });
-            Countly.user_details({ custom: { blocked: "x", allowed: "y", other: "z" }, name: "John", age: 30 });
+            Countbase.user_details({ custom: { blocked: "x", allowed: "y", other: "z" }, name: "John", age: 30 });
             cy.wait(200).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     const userReq = rq.find((r) => r.user_details);
@@ -159,9 +159,9 @@ describe("Behavior settings filters", () => {
 describe("Journey trigger behavior settings", () => {
     it("journey trigger flushes event without heartbeat", () => {
         hp.haltAndClearStorage(() => {
-            Countly.noHeartBeat = true;
+            Countbase.noHeartBeat = true;
             initWithBehavior({ c: { jte: ["journey"] } });
-            Countly.add_event({ key: "journey", count: 1 });
+            Countbase.add_event({ key: "journey", count: 1 });
             cy.fetch_local_event_queue().then((eq) => {
                 expect(eq.length).to.equal(0); // moved out by journey trigger
             });
@@ -171,7 +171,7 @@ describe("Journey trigger behavior settings", () => {
                 const events = JSON.parse(eventReq.events);
                 expect(events.map((e) => e.key)).to.include("journey");
                 cy.wait(2000).then(() => {
-                    var requests = Countly._internals.testingGetRequests();
+                    var requests = Countbase._internals.testingGetRequests();
                     expect(requests.length).to.equal(3); // hc and sc and journey event
                     const journeyReq = requests.find((r) => r.functionName.includes("journey_trigger_send_request")); // journey event
                     const healthReq = requests.find((r) => r.functionName.includes("[healthCheck]"));
@@ -188,9 +188,9 @@ describe("Journey trigger behavior settings", () => {
 
     it("non-journey event stays queued when heartbeat disabled", () => {
         hp.haltAndClearStorage(() => {
-            Countly.noHeartBeat = true;
+            Countbase.noHeartBeat = true;
             initWithBehavior({});
-            Countly.add_event({ key: "regular", count: 1 });
+            Countbase.add_event({ key: "regular", count: 1 });
             cy.fetch_local_event_queue().then((eq) => {
                 expect(eq.map((e) => e.key)).to.include("regular");
             });
@@ -198,7 +198,7 @@ describe("Journey trigger behavior settings", () => {
                 const eventReq = rq.find((r) => r.events);
                 expect(eventReq).to.be.undefined;
                 cy.wait(1500).then(() => {
-                    var requests = Countly._internals.testingGetRequests();
+                    var requests = Countbase._internals.testingGetRequests();
                     expect(requests.length).to.equal(2);
                     const journeyReq = requests.find((r) => r.functionName.includes("journey_trigger_send_request")); // no trigger event
                     const contentReq = requests.find((r) => r.functionName.includes("sendContentRequest"));
@@ -221,8 +221,8 @@ describe("Journey trigger behavior settings", () => {
                 }
             });
             
-            Countly.noHeartBeat = true;
-            Countly.init({
+            Countbase.noHeartBeat = true;
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -230,7 +230,7 @@ describe("Journey trigger behavior settings", () => {
                 fake_request_handler: fakeServer.handler
             });
             
-            Countly.add_event({ key: "journey_test", count: 1 });
+            Countbase.add_event({ key: "journey_test", count: 1 });
             
             cy.wait(4000).then(() => {
                 var requests = fakeServer.requests;
@@ -262,8 +262,8 @@ describe("Journey trigger behavior settings", () => {
                 }
             });
             
-            Countly.noHeartBeat = true;
-            Countly.init({
+            Countbase.noHeartBeat = true;
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -271,7 +271,7 @@ describe("Journey trigger behavior settings", () => {
                 fake_request_handler: fakeServer.handler
             });
             
-            Countly.add_event({ key: "retry_test", count: 1 });
+            Countbase.add_event({ key: "retry_test", count: 1 });
             
             // Wait for retries (3 attempts with 1 second between = ~2 seconds, plus buffer)
             cy.wait(3000).then(() => {
@@ -316,8 +316,8 @@ describe("Journey trigger behavior settings", () => {
                 }
             });
             
-            Countly.noHeartBeat = true;
-            Countly.init({
+            Countbase.noHeartBeat = true;
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -325,7 +325,7 @@ describe("Journey trigger behavior settings", () => {
                 fake_request_handler: fakeServer.handler
             });
             
-            Countly.add_event({ key: "success_retry", count: 1 });
+            Countbase.add_event({ key: "success_retry", count: 1 });
             
             // Wait enough time that 3 retries would have happened (1 second between each)
             cy.wait(3000).then(() => {
@@ -361,8 +361,8 @@ describe("Journey trigger behavior settings", () => {
                 }
             });
             
-            Countly.noHeartBeat = true;
-            Countly.init({
+            Countbase.noHeartBeat = true;
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -370,7 +370,7 @@ describe("Journey trigger behavior settings", () => {
                 fake_request_handler: fakeServer.handler
             });
             
-            Countly.add_event({ key: "fail_event", count: 1 });
+            Countbase.add_event({ key: "fail_event", count: 1 });
             
             cy.wait(2000).then(() => {
                 var requests = fakeServer.requests;
@@ -400,8 +400,8 @@ describe("Journey trigger behavior settings", () => {
                 }
             });
             
-            Countly.noHeartBeat = true;
-            Countly.init({
+            Countbase.noHeartBeat = true;
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -409,7 +409,7 @@ describe("Journey trigger behavior settings", () => {
                 fake_request_handler: fakeServer.handler
             });
             
-            Countly.add_event({ key: "empty_content", count: 1 });
+            Countbase.add_event({ key: "empty_content", count: 1 });
             
             // Wait for retries (3 attempts with 1 second between = ~2 seconds, plus buffer)
             cy.wait(3000).then(() => {
@@ -442,8 +442,8 @@ describe("Journey trigger behavior settings", () => {
                 }
             });
             
-            Countly.noHeartBeat = true;
-            Countly.init({
+            Countbase.noHeartBeat = true;
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -451,7 +451,7 @@ describe("Journey trigger behavior settings", () => {
                 fake_request_handler: fakeServer.handler
             });
             
-            Countly.add_event({ key: "order_test", count: 1 });
+            Countbase.add_event({ key: "order_test", count: 1 });
             
             // Wait for event and content requests (content is sent immediately after event succeeds)
             cy.wait(1000).then(() => {
@@ -486,8 +486,8 @@ describe("Journey trigger behavior settings", () => {
                 }
             });
             
-            Countly.noHeartBeat = true;
-            Countly.init({
+            Countbase.noHeartBeat = true;
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -496,9 +496,9 @@ describe("Journey trigger behavior settings", () => {
             });
             
             // Add multiple journey events quickly
-            Countly.add_event({ key: "multi_journey", count: 1 });
-            Countly.add_event({ key: "multi_journey", count: 1 });
-            Countly.add_event({ key: "multi_journey", count: 1 });
+            Countbase.add_event({ key: "multi_journey", count: 1 });
+            Countbase.add_event({ key: "multi_journey", count: 1 });
+            Countbase.add_event({ key: "multi_journey", count: 1 });
             
             // Wait for processing
             cy.wait(4000).then(() => {
@@ -536,8 +536,8 @@ describe("Journey trigger behavior settings", () => {
                 }
             });
             
-            Countly.noHeartBeat = true;
-            Countly.init({
+            Countbase.noHeartBeat = true;
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -546,12 +546,12 @@ describe("Journey trigger behavior settings", () => {
             });
             
             // Add multiple journey events
-            Countly.add_event({ key: "journey_1", count: 1 });
-            Countly.add_event({ key: "random", count: 1 });
+            Countbase.add_event({ key: "journey_1", count: 1 });
+            Countbase.add_event({ key: "random", count: 1 });
             // content is being displayed so this trigger should be ignored
             cy.wait(1000).then(() => {
-                Countly.add_event({ key: "random", count: 1 });
-                Countly.add_event({ key: "journey_2", count: 1 });
+                Countbase.add_event({ key: "random", count: 1 });
+                Countbase.add_event({ key: "journey_2", count: 1 });
             });
             
             // Wait for processing

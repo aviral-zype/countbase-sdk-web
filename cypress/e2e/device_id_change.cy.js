@@ -1,4 +1,4 @@
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper.js");
 
 // ========================================
@@ -12,7 +12,7 @@ var hp = require("../support/helper.js");
  * @param {*} offline  - offline mode
  */
 function initMain(offline) {
-    Countly.init({
+    Countbase.init({
         app_key: "YOUR_APP_KEY",
         url: "https://your.domain.count.ly",
         test_mode: true,
@@ -50,7 +50,7 @@ function testDeviceIdInReqs(callbackSecond, callbackInitial, generatedID) {
         callbackInitial(); // this is for enabling offline mode
     }
 
-    Countly.add_event(eventObj("1")); // record an event.
+    Countbase.add_event(eventObj("1")); // record an event.
 
     cy.fetch_local_request_queue().then((eq) => {
         if (callbackInitial) { // testing default config
@@ -74,8 +74,8 @@ function testDeviceIdInReqs(callbackSecond, callbackInitial, generatedID) {
 
         // now lets disable temp mode
         callbackSecond(); // and give a new device id or not
-        Countly.add_event(eventObj("2")); // record another event    
-        Countly.user_details({ name: "name" }); // record user details
+        Countbase.add_event(eventObj("2")); // record another event    
+        Countbase.user_details({ name: "name" }); // record user details
         cy.wait(500); // wait for the request to be sent
 
         cy.fetch_local_request_queue().then((eq2) => {
@@ -117,7 +117,7 @@ describe("Device ID change tests ", ()=>{
         hp.haltAndClearStorage(() => {
             initMain(true); // init in offline mode
             testDeviceIdInReqs(()=>{
-                Countly.disable_offline_mode("new ID");
+                Countbase.disable_offline_mode("new ID");
             });
         });
     });
@@ -125,7 +125,7 @@ describe("Device ID change tests ", ()=>{
         hp.haltAndClearStorage(() => {
             initMain(true); // init in offline mode
             testDeviceIdInReqs(()=>{
-                Countly.disable_offline_mode();
+                Countbase.disable_offline_mode();
             }, undefined, true);
         });
     });
@@ -133,7 +133,7 @@ describe("Device ID change tests ", ()=>{
         hp.haltAndClearStorage(() => {
             initMain(true); // init in offline mode
             testDeviceIdInReqs(()=>{
-                Countly.change_id("new ID", true);
+                Countbase.change_id("new ID", true);
             });
         });
     });
@@ -141,7 +141,7 @@ describe("Device ID change tests ", ()=>{
         hp.haltAndClearStorage(() => {
             initMain(true); // init in offline mode
             testDeviceIdInReqs(()=>{
-                Countly.change_id("new ID", false);
+                Countbase.change_id("new ID", false);
             });
         });
     });
@@ -149,7 +149,7 @@ describe("Device ID change tests ", ()=>{
         hp.haltAndClearStorage(() => {
             initMain(true); // init in offline mode
             testDeviceIdInReqs(() => {
-                Countly.set_id("new ID");
+                Countbase.set_id("new ID");
             });
         });
     });
@@ -169,12 +169,12 @@ describe("Device ID change tests ", ()=>{
         hp.haltAndClearStorage(() => {
             initMain(false); // init normally
             testDeviceIdInReqs(()=>{
-                Countly.disable_offline_mode("new ID");
+                Countbase.disable_offline_mode("new ID");
             }, ()=>{
-                Countly.add_event(eventObj("0")); // record an event prior
-                Countly.user_details({ name: "name2" }); // record user details
+                Countbase.add_event(eventObj("0")); // record an event prior
+                Countbase.user_details({ name: "name2" }); // record user details
                 cy.wait(1000); // wait for the request to be sent
-                Countly.enable_offline_mode();
+                Countbase.enable_offline_mode();
             });
         });
     });
@@ -182,12 +182,12 @@ describe("Device ID change tests ", ()=>{
         hp.haltAndClearStorage(() => {
             initMain(false); // init normally
             testDeviceIdInReqs(()=>{
-                Countly.disable_offline_mode();
+                Countbase.disable_offline_mode();
             }, ()=>{
-                Countly.add_event(eventObj("0")); // record an event prior
-                Countly.user_details({ name: "name2" }); // record user details
+                Countbase.add_event(eventObj("0")); // record an event prior
+                Countbase.user_details({ name: "name2" }); // record user details
                 cy.wait(1000); // wait for the request to be sent
-                Countly.enable_offline_mode();
+                Countbase.enable_offline_mode();
             }, true);
         });
     });
@@ -195,12 +195,12 @@ describe("Device ID change tests ", ()=>{
         hp.haltAndClearStorage(() => {
             initMain(false); // init normally
             testDeviceIdInReqs(()=>{
-                Countly.change_id("new ID", true);
+                Countbase.change_id("new ID", true);
             }, ()=>{
-                Countly.add_event(eventObj("0")); // record an event prior
-                Countly.user_details({ name: "name2" }); // record user details
+                Countbase.add_event(eventObj("0")); // record an event prior
+                Countbase.user_details({ name: "name2" }); // record user details
                 cy.wait(1000); // wait for the request to be sent
-                Countly.enable_offline_mode();
+                Countbase.enable_offline_mode();
             });
         });
     });
@@ -208,12 +208,12 @@ describe("Device ID change tests ", ()=>{
         hp.haltAndClearStorage(() => {
             initMain(false); // init normally
             testDeviceIdInReqs(()=>{
-                Countly.change_id("new ID", false);
+                Countbase.change_id("new ID", false);
             }, ()=>{
-                Countly.add_event(eventObj("0")); // record an event prior
-                Countly.user_details({ name: "name2" }); // record user details
+                Countbase.add_event(eventObj("0")); // record an event prior
+                Countbase.user_details({ name: "name2" }); // record user details
                 cy.wait(1000); // wait for the request to be sent
-                Countly.enable_offline_mode();
+                Countbase.enable_offline_mode();
             });
         });
     });
@@ -222,19 +222,19 @@ describe("Device ID change tests ", ()=>{
 describe("Set ID change tests ", () => {
     it('set_id should be non merge as there was dev provided id', () => {
         hp.haltAndClearStorage(() => {
-            Countly.init({
+            Countbase.init({
                 app_key: "YOUR_APP_KEY",
                 url: "https://your.domain.count.ly",
                 test_mode: true,
                 debug: true,
                 device_id: "old ID"
             });
-            Countly.add_event(eventObj("1")); // record an event.
+            Countbase.add_event(eventObj("1")); // record an event.
             cy.wait(500); // wait for the request to be sent
             cy.fetch_local_request_queue().then((eq) => {
                 expect(eq[0].device_id).to.equal("old ID");
-                Countly.set_id("new ID");
-                Countly.add_event(eventObj("2")); // record another event
+                Countbase.set_id("new ID");
+                Countbase.add_event(eventObj("2")); // record another event
                 cy.wait(500); // wait for the request to be sent
                 cy.fetch_local_request_queue().then((eq2) => {
                     expect(eq2.length).to.equal(3); // no merge request
@@ -251,14 +251,14 @@ describe("Set ID change tests ", () => {
     it('set_id should be merge as there was sdk generated id', () => {
         hp.haltAndClearStorage(() => {
             initMain(false); // init normally
-            Countly.add_event(eventObj("1")); // record an event.
+            Countbase.add_event(eventObj("1")); // record an event.
             cy.wait(500); // wait for the request to be sent
             let generatedID;
             cy.fetch_local_request_queue().then((eq) => {
                 cy.log(eq);
                 generatedID = eq[0].device_id; // get the new id from first item in the queue
-                Countly.set_id("new ID");
-                Countly.add_event(eventObj("2")); // record another event
+                Countbase.set_id("new ID");
+                Countbase.add_event(eventObj("2")); // record another event
                 cy.wait(500); // wait for the request to be sent
                 cy.fetch_local_request_queue().then((eq2) => {
                     cy.log(eq2);
@@ -289,7 +289,7 @@ describe("Device ID remote config sequencing", () => {
                 }
             });
 
-            var inst = Countly.init({
+            var inst = Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 device_id: "old ID",
@@ -302,7 +302,7 @@ describe("Device ID remote config sequencing", () => {
             cy.wait(hp.sWait).then(() => {
                 inst.remote_config = function () { };
                 fakeServer.clear();
-                Countly.change_id("new ID", true);
+                Countbase.change_id("new ID", true);
             });
 
             cy.wait(300).then(() => {

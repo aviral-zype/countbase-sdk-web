@@ -1,36 +1,36 @@
-import Countly from "countly-sdk-web";
+import Countbase from "countbase-sdk-web";
 
-const COUNTLY_SERVER_KEY = "https://your.server.ly";
-const COUNTLY_APP_KEY = "YOUR_APP_KEY";
+const COUNTBASE_SERVER_KEY = "https://your.server.ly";
+const COUNTBASE_APP_KEY = "YOUR_APP_KEY";
 
-if (COUNTLY_APP_KEY === "YOUR_APP_KEY" || COUNTLY_SERVER_KEY === "https://your.server.ly") {
+if (COUNTBASE_APP_KEY === "YOUR_APP_KEY" || COUNTBASE_SERVER_KEY === "https://your.server.ly") {
   console.warn("Please do not use default set of app key and server url")
 }
-// initializing countly with params
-Countly.init({
-  app_key: COUNTLY_APP_KEY,
-  url: COUNTLY_SERVER_KEY, //your server goes here
+// initializing countbase with params
+Countbase.init({
+  app_key: COUNTBASE_APP_KEY,
+  url: COUNTBASE_SERVER_KEY, //your server goes here
   app_version: "1.0",
   debug: true
 });
 
 //track sessions automatically
-Countly.track_sessions();
+Countbase.track_sessions();
 
 //track pageviews automatically
-Countly.track_pageview();
+Countbase.track_pageview();
 
 //track any clicks to webpages automatically
-Countly.track_clicks();
+Countbase.track_clicks();
 
 //track link clicks automatically
-Countly.track_links();
+Countbase.track_links();
 
 //track form submissions automatically
-Countly.track_forms();
+Countbase.track_forms();
 
 //track javascript errors
-Countly.track_errors();
+Countbase.track_errors();
 
 //let's cause some errors
 function cause_error() {
@@ -39,16 +39,16 @@ function cause_error() {
 
 window.onload = function () {
   document.getElementById("handled_error").onclick = function handled_error() {
-    Countly.add_log('Pressed handled button');
+    Countbase.add_log('Pressed handled button');
     try {
       cause_error();
     } catch (err) {
-      Countly.log_error(err)
+      Countbase.log_error(err)
     }
   };
 
   document.getElementById("unhandled_error").onclick = function unhandled_error() {
-    Countly.add_log('Pressed unhandled button');
+    Countbase.add_log('Pressed unhandled button');
     cause_error();
   };
 }

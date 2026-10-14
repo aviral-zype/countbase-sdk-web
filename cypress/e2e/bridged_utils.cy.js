@@ -1,10 +1,10 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 /* eslint-disable require-jsdoc */
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper.js");
 
 function initMain(name, version) {
-    Countly.init({
+    Countbase.init({
         app_key: "YOUR_APP_KEY",
         url: "https://your.domain.count.ly",
         test_mode: true,

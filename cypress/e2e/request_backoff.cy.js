@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper");
 
 /**
@@ -18,7 +18,7 @@ var hp = require("../support/helper");
 */
 
 function initMain(beat, time, test_mode, backoff, sc) {
-    Countly.init({
+    Countbase.init({
         app_key: "YOUR_APP_KEY",
         url: "http://localhost:9000",
         debug: true,
@@ -44,7 +44,7 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("setResponseDelay", 0);
             cy.task("startServer");
             initMain();
-            Countly.add_event({ key: "test_1" });
+            Countbase.add_event({ key: "test_1" });
             cy.wait(3000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
@@ -59,7 +59,7 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("setResponseDelay", 31000);
             cy.task("startServer");
             initMain();
-            Countly.add_event({ key: "test_1" });
+            Countbase.add_event({ key: "test_1" });
             cy.wait(40000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
@@ -74,14 +74,14 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("setResponseDelay", 11000);
             cy.task("startServer");
             initMain();
-            Countly.add_event({ key: "test_1" });
+            Countbase.add_event({ key: "test_1" });
             cy.wait(15000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
                     expect(rq.length).to.equal(0);
-                    Countly.add_event({ key: "test_2" });
+                    Countbase.add_event({ key: "test_2" });
                     cy.task("setResponseDelay", 0);
-                    Countly.get_available_feedback_widgets();
+                    Countbase.get_available_feedback_widgets();
                     cy.wait(40000).then(() => {
                         cy.task("getRequests").then((reqs) => {
                             cy.log("Server Requests: " + JSON.stringify(reqs));
@@ -115,7 +115,7 @@ describe("Request Back-off Mechanism Tests", () => {
                                 cy.fetch_local_request_queue().then((rq) => {
                                     cy.log("Request Queue: " + JSON.stringify(rq));
                                     expect(rq.length).to.equal(0);
-                                    Countly.add_event({ key: "test_3" });
+                                    Countbase.add_event({ key: "test_3" });
                                     cy.wait(2000).then(() => {
                                         cy.fetch_local_request_queue().then((rq) => {
                                             cy.log("Request Queue: " + JSON.stringify(rq));
@@ -136,14 +136,14 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("setResponseDelay", 11000);
             cy.task("startServer");
             initMain(undefined, undefined, undefined, true);
-            Countly.add_event({ key: "test_1" });
+            Countbase.add_event({ key: "test_1" });
             cy.wait(15000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
                     expect(rq.length).to.equal(0);
                     cy.task("setResponseDelay", 0);
-                    Countly.add_event({ key: "test_2" });
-                    Countly.attempt_to_send_stored_requests();
+                    Countbase.add_event({ key: "test_2" });
+                    Countbase.attempt_to_send_stored_requests();
                     cy.wait(7000).then(() => {
                         cy.fetch_local_request_queue().then((rq) => {
                             cy.log("Request Queue: " + JSON.stringify(rq));
@@ -160,14 +160,14 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("setResponseDelay", 11000);
             cy.task("startServer");
             initMain(undefined, undefined, undefined, undefined, { c: { bom: false } });
-            Countly.add_event({ key: "test_1" });
+            Countbase.add_event({ key: "test_1" });
             cy.wait(15000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
                     expect(rq.length).to.equal(0);
                     cy.task("setResponseDelay", 0);
-                    Countly.add_event({ key: "test_2" });
-                    Countly.attempt_to_send_stored_requests();
+                    Countbase.add_event({ key: "test_2" });
+                    Countbase.attempt_to_send_stored_requests();
                     cy.wait(8000).then(() => {
                         cy.fetch_local_request_queue().then((rq) => {
                             cy.log("Request Queue: " + JSON.stringify(rq));
@@ -184,14 +184,14 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("setResponseDelay", 3500);
             cy.task("startServer");
             initMain(undefined, undefined, undefined, undefined, { c: { bom_at: 3, bom_d: 15 } });
-            Countly.add_event({ key: "test_1" });
+            Countbase.add_event({ key: "test_1" });
             cy.wait(5000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
                     expect(rq.length).to.equal(0);
-                    Countly.add_event({ key: "test_2" });
+                    Countbase.add_event({ key: "test_2" });
                     cy.task("setResponseDelay", 0);
-                    Countly.get_available_feedback_widgets();
+                    Countbase.get_available_feedback_widgets();
                     cy.wait(5000).then(() => {
                         cy.task("getRequests").then((reqs) => {
                             cy.log("Server Requests: " + JSON.stringify(reqs));
@@ -226,7 +226,7 @@ describe("Request Back-off Mechanism Tests", () => {
                                 cy.fetch_local_request_queue().then((rq) => {
                                     cy.log("Request Queue: " + JSON.stringify(rq));
                                     expect(rq.length).to.equal(0);
-                                    Countly.add_event({ key: "test_3" });
+                                    Countbase.add_event({ key: "test_3" });
                                     cy.wait(2000).then(() => {
                                         cy.fetch_local_request_queue().then((rq) => {
                                             cy.log("Request Queue: " + JSON.stringify(rq));
@@ -248,14 +248,14 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("startServer");
             var oldTimestamp = Math.floor(Date.now() / 1000) - 2 * 60 * 60; // 2 hours ago
             initMain(undefined, oldTimestamp, undefined, undefined, { c: { bom_at: 3, bom_d: 15, bom_ra: 1 } });
-            Countly.add_event({ key: "test_1" });
+            Countbase.add_event({ key: "test_1" });
             cy.wait(5000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
                     expect(rq.length).to.equal(0);
-                    Countly.add_event({ key: "test_2" });
+                    Countbase.add_event({ key: "test_2" });
                     cy.task("setResponseDelay", 0);
-                    Countly.get_available_feedback_widgets();
+                    Countbase.get_available_feedback_widgets();
                     cy.wait(5000).then(() => {
                         cy.task("getRequests").then((reqs) => {
                             cy.log("Server Requests: " + JSON.stringify(reqs));
@@ -299,11 +299,11 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("setResponseDelay", 3500);
             cy.task("startServer");
             initMain(undefined, undefined, undefined, undefined, { c: { bom_at: 3, bom_d: 15, bom_rqp: 0.1 } });
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
             cy.wait(12000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
@@ -318,18 +318,18 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("setResponseDelay", 31000);
             cy.task("startServer");
             initMain();
-            Countly.add_event({ key: "test_1" });
-            Countly.userData.set("key", "value");
-            Countly.userData.save();
-            Countly.add_event({ key: "test_1" });
-            Countly.userData.set("key", "value");
-            Countly.userData.save();
-            Countly.add_event({ key: "test_1" });
-            Countly.userData.set("key", "value");
-            Countly.userData.save();
-            Countly.add_event({ key: "test_1" });
-            Countly.userData.set("key", "value");
-            Countly.userData.save();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.userData.set("key", "value");
+            Countbase.userData.save();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.userData.set("key", "value");
+            Countbase.userData.save();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.userData.set("key", "value");
+            Countbase.userData.save();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.userData.set("key", "value");
+            Countbase.userData.save();
             cy.wait(42000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
@@ -365,22 +365,22 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("startServer");
             var oldTimestamp = Math.floor(Date.now() / 1000) - 10 * 365 * 24 * 60 * 60; // 10 years old timestamp in ms
             initMain(undefined, oldTimestamp);
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
             cy.wait(42000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
@@ -410,15 +410,15 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("startServer");
             var oldTimestamp = Math.floor(Date.now() / 1000) - 25 * 60 * 60; // 25 hours old timestamp in ms
             initMain(undefined, oldTimestamp, true);
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.test_mode_rq(false);
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.test_mode_rq(false);
             cy.wait(45000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
@@ -435,23 +435,23 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("startServer");
             var oldTimestamp = Math.floor(Date.now() / 1000) - 25 * 60 * 60; // 25 hours old timestamp in ms
             initMain(undefined, oldTimestamp, true);
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.test_mode_rq(false);
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.test_mode_rq(false);
             cy.wait(10000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
@@ -468,15 +468,15 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("startServer");
             var oldTimestamp = Math.floor(Date.now() / 1000) - 25 * 60 * 60; // 25 hours old timestamp in ms
             initMain(undefined, oldTimestamp, true);
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.test_mode_rq(false);
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.test_mode_rq(false);
             cy.wait(10000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
@@ -492,23 +492,23 @@ describe("Request Back-off Mechanism Tests", () => {
             cy.task("setResponseDelay", 0);
             cy.task("startServer");
             initMain(undefined, undefined, true);
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.add_event({ key: "test_1" });
-            Countly.attempt_to_send_stored_requests();
-            Countly.test_mode_rq(false);
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.attempt_to_send_stored_requests();
+            Countbase.test_mode_rq(false);
             cy.wait(10000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));

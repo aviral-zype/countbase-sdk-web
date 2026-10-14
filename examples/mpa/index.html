@@ -4,7 +4,7 @@
 <head>
   <!-- Title of our tab -->
   <title>
-    Countly Web Demo
+    Countbase Web Demo
   </title>
   <!--
         // Content security policy
@@ -23,30 +23,30 @@
   <!-- Scripts for the main logic -->
   <script src="dummy_users.js"></script>
   <script src="helper_functions.js"></script>
-  <!-- Async Countly init logic here -->
+  <!-- Async Countbase init logic here -->
   <script type='text/javascript'>
-    // Countly Related Settings
-    var Countly = Countly || {};
-    Countly.q = Countly.q || [];
-    // Countly Config
-    Countly.app_key = "YOUR_APP_KEY";
-    Countly.url = "https://your.server.ly"; //your server goes here
+    // Countbase Related Settings
+    var Countbase = Countbase || {};
+    Countbase.q = Countbase.q || [];
+    // Countbase Config
+    Countbase.app_key = "YOUR_APP_KEY";
+    Countbase.url = "https://your.server.ly"; //your server goes here
 
-    if(Countly.app_key === "YOUR_APP_KEY" || Countly.url === "https://your.server.ly"){
+    if(Countbase.app_key === "YOUR_APP_KEY" || Countbase.url === "https://your.server.ly"){
       console.warn("Please do not use default set of app key and server url")
     }
-    Countly.session_update = 30; //Time interval for session extend
-    Countly.use_session_cookie = false; //if false, begin_session on every app open, be it in new tab
-    Countly.debug = true;
-    Countly.loadAPMScriptsAsync = true;
-    Countly.require_consent = false;
-    Countly.namespace = "demo";
-    Countly.inactivity_time = 1; //User will marked inactive after 1 min, i.e. stop_time and no extend session or end session
-    Countly.offline_mode = false;
-    Countly.force_post = false;
+    Countbase.session_update = 30; //Time interval for session extend
+    Countbase.use_session_cookie = false; //if false, begin_session on every app open, be it in new tab
+    Countbase.debug = true;
+    Countbase.loadAPMScriptsAsync = true;
+    Countbase.require_consent = false;
+    Countbase.namespace = "demo";
+    Countbase.inactivity_time = 1; //User will marked inactive after 1 min, i.e. stop_time and no extend session or end session
+    Countbase.offline_mode = false;
+    Countbase.force_post = false;
 
     // Example usage of remote config to fetch remote configurations 
-    // Countly.remote_config = function(err, rc) {
+    // Countbase.remote_config = function(err, rc) {
     //     if (err) {
     //         return;
     //     }
@@ -56,7 +56,7 @@
     // };
 
     // (optionally) provide custom feature tree if needed
-    // Countly.q.push(['group_features', {
+    // Countbase.q.push(['group_features', {
     //     activity: ["sessions", "events", "views", "location", "remote-config", "apm"],
     //     interaction: ["scrolls", "clicks", "feedback", "star-rating", "attribution"],
     //     whereabouts: ["users", "forms"]
@@ -68,58 +68,58 @@
     //     var consents = localStorage.getItem("consents");
 
     //     if (consents) {
-    //         Countly.q.push(['add_consent', JSON.parse(consents)]);
+    //         Countbase.q.push(['add_consent', JSON.parse(consents)]);
     //     }
     //     else {
     //         //prompt user for consent
     //         var consent = confirm("We are going to track you. Do you give your consent ?");
     //         consents = ["activity", "interaction", "whereabouts"];
     //         if (consent) {
-    //             Countly.q.push(['add_consent', consents]);
+    //             Countbase.q.push(['add_consent', consents]);
     //             localStorage.setItem("consents", JSON.stringify(consents));
     //         }
     //         else {
-    //             Countly.q.push(['remove_consent', consents]);
+    //             Countbase.q.push(['remove_consent', consents]);
     //             localStorage.removeItem("consents");
     //         }
     //     }
     // }
 
     // Tracking user actions
-    Countly.q.push(['track_sessions']);
-    Countly.q.push(['track_pageview']);
+    Countbase.q.push(['track_sessions']);
+    Countbase.q.push(['track_pageview']);
 
     // For heatmaps record scrolls and clicks
-    Countly.q.push(['track_scrolls']);
-    Countly.q.push(['track_clicks']);
+    Countbase.q.push(['track_scrolls']);
+    Countbase.q.push(['track_clicks']);
 
-    // Countly.q.push(['track_links', '']);
-    // Countly.q.push(['track_forms']);
-    // Countly.q.push(['recordDirectAttribution']);
+    // Countbase.q.push(['track_links', '']);
+    // Countbase.q.push(['track_forms']);
+    // Countbase.q.push(['recordDirectAttribution']);
 
     // enable APM
-    Countly.q.push(["track_performance"]);
+    Countbase.q.push(["track_performance"]);
 
-    // init Countly
+    // init Countbase
     (function () {
       var cly = document.createElement('script');
       cly.type = 'text/javascript';
       cly.async = true;
       // provide the correct path according to your project structure
-      cly.src = '../../lib/countly.js';
+      cly.src = '../../lib/countbase.js';
       cly.onload = function () {
-        Countly.init();
+        Countbase.init();
       };
       var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(cly, s);
     })();
 
     // Change device id randomly
-    // Countly.change_id(Countly._internals.generateUUID());
+    // Countbase.change_id(Countbase._internals.generateUUID());
 
     setTimeout(function () {
       // if the email form is filled report 30 sec after init
-      Countly.q.push(['track_forms', $("#mynewform-form")[0]]);
+      Countbase.q.push(['track_forms', $("#mynewform-form")[0]]);
     }, 30000);
   </script>
 </head>
@@ -137,7 +137,7 @@
   <!-- Main content  -->
   <center>
     <!-- Center Image. Anything you want to show at the center.  -->
-    <img src="../images/team_countly.jpg" id="wallpaper" />
+    <img src="../images/team_countbase.jpg" id="wallpaper" />
 
     <!-- Welcome Text. With user name. -->
     <h2 id="welcome-user">No User is Signed In</h2>
@@ -280,7 +280,7 @@
         localStorage.removeItem("web-demo-user");
         $("#welcome-user").text("Not Signed In");
         $("#user-state").text("Sign In");
-        Countly.q.push(['change_id', Countly._internals.generateUUID()]);
+        Countbase.q.push(['change_id', Countbase._internals.generateUUID()]);
       } else {
         // Sign user in
         var login = confirm("Do you want to login ?");
@@ -293,7 +293,7 @@
           localStorage.setItem("web-demo-login-state", true);
 
           // Change user's device on login - He is now an identified user
-          Countly.q.push(['change_id', user.device_id]);
+          Countbase.q.push(['change_id', user.device_id]);
 
           // send user_details
           setUserData(user);
@@ -321,21 +321,21 @@
 
     // fetch nps widgets
     $("#nps").on("click", function () {
-      Countly.q.push(["get_available_feedback_widgets", allWidgetsCallbackNPS]);
+      Countbase.q.push(["get_available_feedback_widgets", allWidgetsCallbackNPS]);
     });
     // fetch survey widgets
     $("#survey").on("click", function () {
-      Countly.q.push(["get_available_feedback_widgets", allWidgetsCallbackSurvey]);
+      Countbase.q.push(["get_available_feedback_widgets", allWidgetsCallbackSurvey]);
     });
     // fetch rating widgets
     $("#rating").on("click", function () {
-      Countly.q.push(["get_available_feedback_widgets", allWidgetsCallbackRating]);
+      Countbase.q.push(["get_available_feedback_widgets", allWidgetsCallbackRating]);
     });
     // fetch random feedback widgets
     $("#random").on("click", function () {
       const callbacks = [allWidgetsCallbackNPS, allWidgetsCallbackSurvey, allWidgetsCallbackRating];
       var widget = getRandomNumber(0, callbacks.length - 1);
-      Countly.q.push(["get_available_feedback_widgets", callbacks[widget]]);
+      Countbase.q.push(["get_available_feedback_widgets", callbacks[widget]]);
     });
 
     //display a rating widget with ID
@@ -344,7 +344,7 @@
       if (!id) {
         return;
       } else {
-        Countly.enableRatingWidgets({
+        Countbase.enableRatingWidgets({
           'popups': [id.trim()]
         });
       }
@@ -358,13 +358,13 @@
       } else {
         //trim whitespace
         const idArray = ids.split(',').map(a => a.trim());
-        Countly.initializeRatingWidgets(idArray);
+        Countbase.initializeRatingWidgets(idArray);
       }
     });
 
     // fetch, display and use the remote configuration, this is an example implementation, must be changed for your own specific use case
     $("#call-remote-config").on("click", function () {
-      Countly.fetch_remote_config(function (err, remoteConfigs) {
+      Countbase.fetch_remote_config(function (err, remoteConfigs) {
         if (err) {
           return;
         }
@@ -382,7 +382,7 @@
         alert("Please provide a valid event name!!");
         return;
       } else {
-        Countly.q.push(['add_event', {
+        Countbase.q.push(['add_event', {
           "key": eventName,
           "count": 1
         }]);
@@ -397,7 +397,7 @@
         alert("Please provide a valid ID!!");
         return;
       } else {
-        Countly.q.push(['change_id', ID, merge]);
+        Countbase.q.push(['change_id', ID, merge]);
         document.getElementById("form-div").style.display = "block";
       }
 
@@ -408,7 +408,7 @@
     });
     // change device ID button logic
     $("#change-device-id").on("click", function () {
-      var id = Countly._internals.generateUUID();
+      var id = Countbase._internals.generateUUID();
       document.getElementById("id-input").value = id;
       document.getElementById("form-div").style.display = "block";
     });

@@ -1,11 +1,11 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 /* eslint-disable require-jsdoc */
-var Countly = require("../../lib/countly");
-// import * as Countly from "../../dist/countly_umd.js";
+var Countbase = require("../../lib/countbase");
+// import * as Countbase from "../../dist/countbase_umd.js";
 var hp = require("../support/helper.js");
 
 function initMain() {
-    Countly.init({
+    Countbase.init({
         app_key: "YOUR_APP_KEY",
         url: "http://localhost:9000",
         debug: true
@@ -33,7 +33,7 @@ describe("Content Filter Tests", () => {
                 return false;
             }
 
-            Countly.content.enterContentZone(filter);
+            Countbase.content.enterContentZone(filter);
 
             cy.wait(5000).then(() => {
                 expect(filterParams.length).to.be.greaterThan(0);
@@ -52,7 +52,7 @@ describe("Content Filter Tests", () => {
             cy.task("setResponseDelay", 0);
             cy.task("startServer");
             const filterParams = [];
-            Countly.q = Countly.q || [];
+            Countbase.q = Countbase.q || [];
             initMain();
 
             function filter(params) {
@@ -60,7 +60,7 @@ describe("Content Filter Tests", () => {
                 return false;
             }
 
-            Countly.q.push(["content.enterContentZone", filter]);
+            Countbase.q.push(["content.enterContentZone", filter]);
 
             cy.wait(5000).then(() => {
                 expect(filterParams.length).to.be.greaterThan(0);

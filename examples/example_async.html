@@ -4,24 +4,24 @@
 	<!-- Page styling here -->
 	<link rel='stylesheet' type='text/css' href='./style/style.css'>
 
-	<!--Countly script-->
+	<!--Countbase script-->
 	<script type='text/javascript'>
 		//some default pre init
-		var Countly = Countly || {};
-		Countly.q = Countly.q || [];
+		var Countbase = Countbase || {};
+		Countbase.q = Countbase.q || [];
 
-		//provide countly initialization parameters
-		Countly.app_key = "YOUR_APP_KEY";
-		Countly.url = "https://your.server.ly"; //your server goes here
+		//provide countbase initialization parameters
+		Countbase.app_key = "YOUR_APP_KEY";
+		Countbase.url = "https://your.server.ly"; //your server goes here
 
-		if (Countly.app_key === "YOUR_APP_KEY" || Countly.url === "https://your.server.ly") {
+		if (Countbase.app_key === "YOUR_APP_KEY" || Countbase.url === "https://your.server.ly") {
 			console.warn("Please do not use default set of app key and server url")
 		}
-		Countly.debug = true;
+		Countbase.debug = true;
 
 		//start pushing function calls to queue
 		//track sessions automatically
-		Countly.q.push(['track_sessions']);
+		Countbase.q.push(['track_sessions']);
 
 		//content filter example
 		function filter(params) {
@@ -32,23 +32,23 @@
 		}
 
 		//enter content zone with filter
-		Countly.q.push(['content.enterContentZone', filter]);
+		Countbase.q.push(['content.enterContentZone', filter]);
 
 		//track sessions automatically
-		Countly.q.push(['track_pageview']);
+		Countbase.q.push(['track_pageview']);
 
-		//load countly script asynchronously
+		//load countbase script asynchronously
 		(function () {
 			var cly = document.createElement('script'); cly.type = 'text/javascript';
 			cly.async = true;
 			//enter url of script here
-			cly.src = '../lib/countly.js';
-			cly.onload = function () { Countly.init() };
+			cly.src = '../lib/countbase.js';
+			cly.onload = function () { Countbase.init() };
 			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(cly, s);
 		})();
 		//send event on button click
 		function clickEvent() {
-			Countly.q.push(['add_event', {
+			Countbase.q.push(['add_event', {
 				key: "buttonClick",
 				"segmentation": {
 					"id": "id"
@@ -62,7 +62,7 @@
 				alert("Please select an image file.");
 				return;
 			}
-			Countly.q.push(["uploadUserProfilePicture", file]);
+			Countbase.q.push(["uploadUserProfilePicture", file]);
 		}
 	</script>
 </head>
@@ -70,12 +70,12 @@
 <body>
 	<!-- Header, banner etc. Top part of your site  -->
 	<div id="header">
-		<h1>Async Countly Implementation</h1>
+		<h1>Async Countbase Implementation</h1>
 		<img id="logo" src="./images/logo.png">
 	</div>
 
 	<center>
-		<img src="./images/team_countly.jpg" id="wallpaper" />
+		<img src="./images/team_countbase.jpg" id="wallpaper" />
 		<br />
 		<input type="button" id="testButton" onclick="clickEvent()" value="Test Button">
 		<br /><br />
@@ -83,7 +83,7 @@
 		<br /><br />
 		<br />
 		<input type="button" onclick="uploadProfilePicture()" value="Upload Profile Picture">
-		<p><a href='https://countly.com/'>Countly</a></p>
+		<p><a href='https://countly.com/'>Countbase</a></p>
 	</center>
 </body>
 

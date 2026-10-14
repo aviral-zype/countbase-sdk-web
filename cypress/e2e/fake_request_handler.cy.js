@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper");
 
 /**
@@ -11,7 +11,7 @@ describe("Fake request handler", () => {
         hp.haltAndClearStorage(() => {
             var capturedRequests = [];
             
-            Countly.init({
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -22,8 +22,8 @@ describe("Fake request handler", () => {
                 }
             });
             
-            Countly.add_event({ key: "test_event", count: 1 });
-            Countly.begin_session();
+            Countbase.add_event({ key: "test_event", count: 1 });
+            Countbase.begin_session();
             
             cy.wait(500).then(() => {
                 // Verify requests were captured
@@ -46,7 +46,7 @@ describe("Fake request handler", () => {
         hp.haltAndClearStorage(() => {
             var requestCount = 0;
             
-            Countly.init({
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -57,7 +57,7 @@ describe("Fake request handler", () => {
                 }
             });
             
-            Countly.begin_session();
+            Countbase.begin_session();
             
             cy.wait(300).then(() => {
                 // Requests should still be captured even on error
@@ -70,7 +70,7 @@ describe("Fake request handler", () => {
         hp.haltAndClearStorage(() => {
             var capturedRequests = [];
             
-            Countly.init({
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -78,19 +78,19 @@ describe("Fake request handler", () => {
             });
             
             // Set handler at runtime
-            Countly._internals.setFakeRequestHandler(function(req) {
+            Countbase._internals.setFakeRequestHandler(function(req) {
                 capturedRequests.push(req);
                 return { status: 200, responseText: '{"result":"Success"}' };
             });
             
             // Verify it was set
-            var handler = Countly._internals.getFakeRequestHandler();
+            var handler = Countbase._internals.getFakeRequestHandler();
             expect(handler).to.be.a("function");
             
             // Enable request processing
-            Countly.test_mode_rq(false);
+            Countbase.test_mode_rq(false);
             
-            Countly.add_event({ key: "runtime_event", count: 1 });
+            Countbase.add_event({ key: "runtime_event", count: 1 });
             
             cy.wait(500).then(() => {
                 expect(capturedRequests.length).to.be.greaterThan(0);
@@ -100,7 +100,7 @@ describe("Fake request handler", () => {
 
     it("returns default success when handler returns undefined", () => {
         hp.haltAndClearStorage(() => {
-            Countly.init({
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -110,11 +110,11 @@ describe("Fake request handler", () => {
                 }
             });
             
-            Countly.begin_session();
+            Countbase.begin_session();
             
             cy.wait(300).then(() => {
                 // Session should start successfully with default response
-                expect(Countly._internals.testingGetRequests().length).to.be.greaterThan(0);
+                expect(Countbase._internals.testingGetRequests().length).to.be.greaterThan(0);
             });
         });
     });
@@ -123,7 +123,7 @@ describe("Fake request handler", () => {
         hp.haltAndClearStorage(() => {
             var capturedRequests = [];
             
-            Countly.init({
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -134,7 +134,7 @@ describe("Fake request handler", () => {
                 }
             });
             
-            Countly.begin_session();
+            Countbase.begin_session();
             
             cy.wait(300).then(() => {
                 // Requests should still be captured
@@ -156,15 +156,15 @@ describe("Fake request handler", () => {
                 }
             });
             
-            Countly.init({
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
                 fake_request_handler: fakeServer.handler
             });
             
-            Countly.begin_session();
-            Countly.add_event({ key: "helper_event", count: 1 });
+            Countbase.begin_session();
+            Countbase.add_event({ key: "helper_event", count: 1 });
             
             cy.wait(500).then(() => {
                 // Use helper methods for easy querying
@@ -185,7 +185,7 @@ describe("Fake request handler", () => {
         hp.haltAndClearStorage(() => {
             var lastRequest = null;
             
-            Countly.init({
+            Countbase.init({
                 app_key: hp.appKey,
                 url: "https://test.count.ly",
                 debug: true,
@@ -195,7 +195,7 @@ describe("Fake request handler", () => {
                 }
             });
             
-            Countly.begin_session();
+            Countbase.begin_session();
             
             cy.wait(300).then(() => {
                 expect(lastRequest).to.not.be.null;

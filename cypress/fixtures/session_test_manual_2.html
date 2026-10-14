@@ -1,8 +1,8 @@
 <!--Here we have manual session tracking with a button and eventListener-->
 <html>
 <head>
-<!--Countly script-->
-<script type='text/javascript' src='../../lib/countly.js'></script>
+<!--Countbase script-->
+<script type='text/javascript' src='../../lib/countbase.js'></script>
 <script type='module'>
 import { queryExtractor } from '../support/integration_helper.js';
 // here we implement a cookie and localStorage clearing logic
@@ -21,8 +21,8 @@ console.error("cleared the storage");
 // we extract the url query and dissect the embedded configuration object within
 const confObj = queryExtractor(window.location.search);
 
-//initializing countly with params
-Countly.init({
+//initializing countbase with params
+Countbase.init({
 	app_key: "YOUR_APP_KEY",
 	url: "https://your.domain.count.ly",
   device_id: "manual_2",
@@ -31,17 +31,17 @@ Countly.init({
   use_session_cookie: confObj.use_session_cookie || false,
 	debug:true
 })
-Countly.begin_session();
+Countbase.begin_session();
 // event listener to end session
 window.addEventListener("beforeunload", function () {
-    Countly.end_session(undefined, true);
+    Countbase.end_session(undefined, true);
 })
 </script>
 </head>
 <body>
 <script type='text/javascript' >
 function clickEvent(){
-	window.Countly.add_event({
+	window.Countbase.add_event({
     key: "buttonClick",
     "segmentation": {
         "id": "id"

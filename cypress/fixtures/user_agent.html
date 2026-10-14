@@ -1,17 +1,17 @@
 <html>
 <head>
-<script type='text/javascript' src='../../lib/countly.js'></script>
+<script type='text/javascript' src='../../lib/countbase.js'></script>
 <script type='text/javascript'>
 
-Countly.init({
+Countbase.init({
 	app_key: "YOUR_APP_KEY",
 	url: "https://your.domain.count.ly",
 	debug:true
 })
  // create a new button element and assign values of user agent functions to them here:
 var cly = document.createElement('button'); 
-cly.value = Countly._internals.userAgentDeviceDetection(); 
-cly.name = Countly._internals.userAgentSearchBotDetection(); 
+cly.value = Countbase._internals.userAgentDeviceDetection(); 
+cly.name = Countbase._internals.userAgentSearchBotDetection(); 
 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(cly, s);
 </script>
 </head>

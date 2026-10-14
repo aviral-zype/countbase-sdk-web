@@ -3,12 +3,12 @@ import {
   withRouter
 } from "react-router-dom";
 
-import Countly from 'countly-sdk-web';
+import Countbase from 'countbase-sdk-web';
 
 class Location extends React.Component {
     componentDidUpdate(prevProps) {
       if (this.props.location.pathname !== prevProps.location.pathname) {
-        Countly.q.push(["track_pageview", this.props.location.pathname]);
+        Countbase.q.push(["track_pageview", this.props.location.pathname]);
       }
     }
   

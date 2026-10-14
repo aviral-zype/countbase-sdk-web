@@ -4,38 +4,38 @@
     <!-- Page styling here -->
     <link rel='stylesheet' type='text/css' href='./style/style.css'>
 
-    <!--Countly script-->
-    <script type='text/javascript' src='../lib/countly.js'></script>
+    <!--Countbase script-->
+    <script type='text/javascript' src='../lib/countbase.js'></script>
     <script type='text/javascript'>
 
-        //initializing countly with params and passing require_consent config as true
-        const COUNTLY_SERVER_KEY = "https://your.server.ly";
-        const COUNTLY_APP_KEY = "YOUR_APP_KEY";
+        //initializing countbase with params and passing require_consent config as true
+        const COUNTBASE_SERVER_KEY = "https://your.server.ly";
+        const COUNTBASE_APP_KEY = "YOUR_APP_KEY";
 
-        if (COUNTLY_APP_KEY === "YOUR_APP_KEY" || COUNTLY_SERVER_KEY === "https://your.server.ly") {
+        if (COUNTBASE_APP_KEY === "YOUR_APP_KEY" || COUNTBASE_SERVER_KEY === "https://your.server.ly") {
             console.warn("Please do not use default set of app key and server url")
         }
-        // initializing countly with params
-        Countly.init({
-            app_key: COUNTLY_APP_KEY,
-            url: COUNTLY_SERVER_KEY, //your server goes here
+        // initializing countbase with params
+        Countbase.init({
+            app_key: COUNTBASE_APP_KEY,
+            url: COUNTBASE_SERVER_KEY, //your server goes here
             debug: true,
             require_consent: true //this true means consent is required
         });
 
         //(optionally) provide custom feature tree if needed
-        Countly.group_features({
+        Countbase.group_features({
             activity: ["sessions", "events", "views"],
             interaction: ["scrolls", "clicks", "forms"]
         });
 
         //we can call all the helper methods we want, they won't record until consent is provided for specific features
-        Countly.track_sessions();
-        Countly.track_pageview();
-        Countly.track_clicks();
-        Countly.track_links();
-        Countly.track_forms();
-        Countly.track_errors({ jquery: "1.10", jqueryui: "1.10" });
+        Countbase.track_sessions();
+        Countbase.track_pageview();
+        Countbase.track_clicks();
+        Countbase.track_links();
+        Countbase.track_forms();
+        Countbase.track_errors({ jquery: "1.10", jqueryui: "1.10" });
 
         //Consent Management logic should be implemented and controled by developer
         //this is just a simply example of what logic it could have
@@ -43,8 +43,8 @@
             var consents = localStorage.getItem("consents");
             //checking if user already provided consent
             if (consents) {
-                //we already have array with consents from previous visit, let's just pass them to Countly
-                Countly.add_consent(JSON.parse(consents));
+                //we already have array with consents from previous visit, let's just pass them to Countbase
+                Countbase.add_consent(JSON.parse(consents));
             }
             else {
                 //user have not yet provided us a consent
@@ -62,13 +62,13 @@
         function giveConsent() {
             //give consent to same 3 features
             var response = ["activity", "interaction", "crashes"];
-            Countly.add_consent(response);
+            Countbase.add_consent(response);
             localStorage.setItem("consents", JSON.stringify(response));
         }
         function removeConsent() {
             //remove consent from same 3 features
             var response = ["activity", "interaction", "crashes"];
-            Countly.remove_consent(response);
+            Countbase.remove_consent(response);
             localStorage.setItem("consents", JSON.stringify([]));
         }
     </script>
@@ -82,7 +82,7 @@
     </div>
 
     <center>
-        <img src="./images/team_countly.jpg" id="wallpaper" />
+        <img src="./images/team_countbase.jpg" id="wallpaper" />
         <form method='post' name='comments' onsubmit="return false;">
             <p><input type="text" name="message" value="Message Name"></p>
             <p><textarea>Message</textarea></p>
@@ -95,7 +95,7 @@
         </form>
         <p><button id="unhandled_error" onclick="unhandled_error()">Unhandled Error</button></p>
         <p><a id="track_link" href='#link'>Dummy link</a></p>
-        <p><a href='https://countly.com/'>Countly</a></p>
+        <p><a href='https://countly.com/'>Countbase</a></p>
         <p><button onclick="giveConsent()">Give Consent</button></p>
         <p><button onclick="removeConsent()">Remove Consent</button></p>
     </center>

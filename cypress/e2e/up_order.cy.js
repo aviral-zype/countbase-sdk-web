@@ -1,12 +1,12 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 /* eslint-disable require-jsdoc */
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper");
 
-Countly.q = Countly.q || [];
+Countbase.q = Countbase.q || [];
 
 function initMain() {
-    Countly.init({
+    Countbase.init({
         app_key: "YOUR_APP_KEY",
         url: "https://your.domain.count.ly",
         test_mode_eq: true,
@@ -35,12 +35,12 @@ describe("User properties order test", () => {
     it("User details order test", () => {
         hp.haltAndClearStorage(() => {
             initMain();
-            Countly.begin_session();
-            Countly.add_event(eventObj);
-            Countly.user_details(userDetailObj);
-            Countly.add_event(eventObj);
-            Countly.add_event(eventObj);
-            Countly.user_details(userDetailObj);
+            Countbase.begin_session();
+            Countbase.add_event(eventObj);
+            Countbase.user_details(userDetailObj);
+            Countbase.add_event(eventObj);
+            Countbase.add_event(eventObj);
+            Countbase.user_details(userDetailObj);
             cy.fetch_local_event_queue().then((eq) => {
                 expect(eq.length).to.equal(0);
             });
@@ -61,12 +61,12 @@ describe("User properties order test", () => {
     it("User details order test, async", () => {
         hp.haltAndClearStorage(() => {
             initMain();
-            Countly.q.push(['track_sessions']);
-            Countly.q.push(['add_event', eventObj]);
-            Countly.q.push(['user_details', userDetailObj]);
-            Countly.q.push(['add_event', eventObj]);
-            Countly.q.push(['add_event', eventObj]);
-            Countly.q.push(['user_details', userDetailObj]);
+            Countbase.q.push(['track_sessions']);
+            Countbase.q.push(['add_event', eventObj]);
+            Countbase.q.push(['user_details', userDetailObj]);
+            Countbase.q.push(['add_event', eventObj]);
+            Countbase.q.push(['add_event', eventObj]);
+            Countbase.q.push(['user_details', userDetailObj]);
             cy.fetch_local_event_queue().then((eq) => {
                 expect(eq.length).to.equal(0);
             });
@@ -87,12 +87,12 @@ describe("User properties order test", () => {
     it("User data order test", () => {
         hp.haltAndClearStorage(() => {
             initMain();
-            Countly.userData.set("name", "John Doe");
-            Countly.begin_session();
-            Countly.userData.set("name", "John Doe");
-            Countly.add_event(eventObj);
-            Countly.userData.set("name", "John Doe");
-            Countly.user_details(userDetailObj);
+            Countbase.userData.set("name", "John Doe");
+            Countbase.begin_session();
+            Countbase.userData.set("name", "John Doe");
+            Countbase.add_event(eventObj);
+            Countbase.userData.set("name", "John Doe");
+            Countbase.user_details(userDetailObj);
             cy.fetch_local_event_queue().then((eq) => {
                 expect(eq.length).to.equal(0);
             });
@@ -113,12 +113,12 @@ describe("User properties order test", () => {
     it("User data order test, async", () => {
         hp.haltAndClearStorage(() => {
             initMain();
-            Countly.q.push(['userData.set', "name", "John Doe"]);
-            Countly.q.push(['track_sessions']);
-            Countly.q.push(['userData.set', "name", "John Doe"]);
-            Countly.q.push(['add_event', eventObj]);
-            Countly.q.push(['userData.set', "name", "John Doe"]);
-            Countly.q.push(['user_details', userDetailObj]);
+            Countbase.q.push(['userData.set', "name", "John Doe"]);
+            Countbase.q.push(['track_sessions']);
+            Countbase.q.push(['userData.set', "name", "John Doe"]);
+            Countbase.q.push(['add_event', eventObj]);
+            Countbase.q.push(['userData.set', "name", "John Doe"]);
+            Countbase.q.push(['user_details', userDetailObj]);
             cy.fetch_local_event_queue().then((eq) => {
                 expect(eq.length).to.equal(0);
             });

@@ -1,6 +1,6 @@
 <html>
 <head>
-    <script type='text/javascript' src='../../lib/countly.js'></script>
+    <script type='text/javascript' src='../../lib/countbase.js'></script>
     <script type='module'>
         import { triggerStorageChange } from '../support/integration_helper.js';
         // here we implement a cookie and localStorage clearing logic
@@ -19,149 +19,149 @@
         // ==================================================
         // synchronously
         // ==================================================
-        //initializing first instance, which will be global Countly
-        Countly.init({
+        //initializing first instance, which will be global Countbase
+        Countbase.init({
             app_key: "YOUR_APP_KEY1",
             url: "https://your.domain.count.ly",
             test_mode: true
         })
-        Countly.remove_consent();
-        Countly.disable_offline_mode();
+        Countbase.remove_consent();
+        Countbase.disable_offline_mode();
         triggerStorageChange("YOUR_APP_KEY1/cly_id", "id1");
         triggerStorageChange("YOUR_APP_KEY3/cly_id", "id3");
-        Countly.add_event({ key: "test", count: 1, sum: 1, dur: 1, segmentation: { test: "test" } });
-        Countly.start_event("test");
-        Countly.cancel_event("gobbledygook");
-        Countly.end_event("test");
-        Countly.report_conversion("camp_id", "camp_user_id");
-        Countly.recordDirectAttribution("camp_id", "camp_user_id");
-        Countly.user_details({ name: "name" });
-        Countly.userData.set("set", "set");
-        Countly.userData.save();
-        Countly.report_trace({ name: "name", stz: 1, type: "type" });
-        Countly.log_error({ error: "error", stack: "stack" });
-        Countly.add_log("error");
-        Countly.fetch_remote_config();
-        Countly.enrollUserToAb();
-        Countly.track_sessions();
-        Countly.track_pageview();
-        Countly.track_errors();
-        Countly.track_clicks();
-        Countly.track_scrolls();
-        Countly.track_links();
-        Countly.track_forms();
-        Countly.collect_from_forms();
-        Countly.collect_from_facebook();
-        Countly.opt_in();
+        Countbase.add_event({ key: "test", count: 1, sum: 1, dur: 1, segmentation: { test: "test" } });
+        Countbase.start_event("test");
+        Countbase.cancel_event("gobbledygook");
+        Countbase.end_event("test");
+        Countbase.report_conversion("camp_id", "camp_user_id");
+        Countbase.recordDirectAttribution("camp_id", "camp_user_id");
+        Countbase.user_details({ name: "name" });
+        Countbase.userData.set("set", "set");
+        Countbase.userData.save();
+        Countbase.report_trace({ name: "name", stz: 1, type: "type" });
+        Countbase.log_error({ error: "error", stack: "stack" });
+        Countbase.add_log("error");
+        Countbase.fetch_remote_config();
+        Countbase.enrollUserToAb();
+        Countbase.track_sessions();
+        Countbase.track_pageview();
+        Countbase.track_errors();
+        Countbase.track_clicks();
+        Countbase.track_scrolls();
+        Countbase.track_links();
+        Countbase.track_forms();
+        Countbase.collect_from_forms();
+        Countbase.collect_from_facebook();
+        Countbase.opt_in();
 
         //initialize second instance for another app synchronously
-        var Countly2 = Countly.init({
+        var Countbase2 = Countbase.init({
             app_key: "YOUR_APP_KEY2", //must have different APP key
             url: "https://your.domain.count.ly",
             test_mode: true
 
         });
-        Countly2.remove_consent();
-        Countly2.disable_offline_mode();
-        Countly2.add_event({ key: "test", count: 1, sum: 1, dur: 1, segmentation: { test: "test" } });
-        Countly2.start_event("test");
-        Countly2.cancel_event("gobbledygook");
-        Countly2.end_event("test");
-        Countly2.report_conversion("camp_id", "camp_user_id");
-        Countly2.recordDirectAttribution("camp_id", "camp_user_id");
-        Countly2.user_details({ name: "name" });
-        Countly2.userData.set("set", "set");
-        Countly2.userData.save();
-        Countly2.report_trace({ name: "name", stz: 1, type: "type" });
-        Countly2.log_error({ error: "error", stack: "stack" });
-        Countly2.add_log("error");
-        Countly2.fetch_remote_config();
-        Countly2.enrollUserToAb();
-        Countly2.track_sessions();
-        Countly2.track_pageview();
-        Countly2.track_errors();
-        Countly2.track_clicks();
-        Countly2.track_scrolls();
-        Countly2.track_links();
-        Countly2.track_forms();
-        Countly2.collect_from_forms();
-        Countly2.collect_from_facebook();
-        Countly2.opt_in();
+        Countbase2.remove_consent();
+        Countbase2.disable_offline_mode();
+        Countbase2.add_event({ key: "test", count: 1, sum: 1, dur: 1, segmentation: { test: "test" } });
+        Countbase2.start_event("test");
+        Countbase2.cancel_event("gobbledygook");
+        Countbase2.end_event("test");
+        Countbase2.report_conversion("camp_id", "camp_user_id");
+        Countbase2.recordDirectAttribution("camp_id", "camp_user_id");
+        Countbase2.user_details({ name: "name" });
+        Countbase2.userData.set("set", "set");
+        Countbase2.userData.save();
+        Countbase2.report_trace({ name: "name", stz: 1, type: "type" });
+        Countbase2.log_error({ error: "error", stack: "stack" });
+        Countbase2.add_log("error");
+        Countbase2.fetch_remote_config();
+        Countbase2.enrollUserToAb();
+        Countbase2.track_sessions();
+        Countbase2.track_pageview();
+        Countbase2.track_errors();
+        Countbase2.track_clicks();
+        Countbase2.track_scrolls();
+        Countbase2.track_links();
+        Countbase2.track_forms();
+        Countbase2.collect_from_forms();
+        Countbase2.collect_from_facebook();
+        Countbase2.opt_in();
 
         // ==================================================
         // asynchronously
         // ==================================================
         //initialize third instance for another app asynchronously
-        Countly.q.push(["init", {
+        Countbase.q.push(["init", {
             app_key: "YOUR_APP_KEY3", //must have different APP key
             url: "https://your.domain.count.ly",
             test_mode: true
 
         }])
-        Countly.q.push(["YOUR_APP_KEY3", "remove_consent"]);
-        Countly.q.push(["YOUR_APP_KEY3", "disable_offline_mode"]);
-        Countly.q.push(["YOUR_APP_KEY3", "add_event", { key: "test", count: 1, sum: 1, dur: 1, segmentation: { test: "test" } }]);
-        Countly.q.push(["YOUR_APP_KEY3", "start_event", "test"]);
-        Countly.q.push(["YOUR_APP_KEY3", "cancel_event", "gobbledygook"]);
-        Countly.q.push(["YOUR_APP_KEY3", "end_event", "test"]);
-        Countly.q.push(["YOUR_APP_KEY3", "report_conversion", "camp_id", "camp_user_id"]);
-        Countly.q.push(["YOUR_APP_KEY3", "recordDirectAttribution", "camp_id", "camp_user_id"]);
-        Countly.q.push(["YOUR_APP_KEY3", "user_details", { name: "name" }]);
-        Countly.q.push(["YOUR_APP_KEY3", "userData.set", "set", "set"]);
-        Countly.q.push(["YOUR_APP_KEY3", "userData.save"]);
-        Countly.q.push(["YOUR_APP_KEY3", "report_trace", { name: "name", stz: 1, type: "type" }]);
-        Countly.q.push(["YOUR_APP_KEY3", "log_error", { error: "error", stack: "stack" }]);
-        Countly.q.push(["YOUR_APP_KEY3", "add_log", "error"]);
-        Countly.q.push(["YOUR_APP_KEY3", "fetch_remote_config"]);
-        Countly.q.push(["YOUR_APP_KEY3", "enrollUserToAb"]);
-        Countly.q.push(["YOUR_APP_KEY3", "track_sessions"]);
-        Countly.q.push(["YOUR_APP_KEY3", "track_pageview"]);
-        Countly.q.push(["YOUR_APP_KEY3", "track_errors"]);
-        Countly.q.push(["YOUR_APP_KEY3", "track_clicks"]);
-        Countly.q.push(["YOUR_APP_KEY3", "track_scrolls"]);
-        Countly.q.push(["YOUR_APP_KEY3", "track_links"]);
-        Countly.q.push(["YOUR_APP_KEY3", "track_forms"]);
-        Countly.q.push(["YOUR_APP_KEY3", "collect_from_forms"]);
-        Countly.q.push(["YOUR_APP_KEY3", "collect_from_facebook"]);
-        Countly.q.push(["YOUR_APP_KEY3", "opt_in"]);
-        Countly.q.push(["YOUR_APP_KEY3", "feedback.showNPS"]);
-        Countly.q.push(["YOUR_APP_KEY3", "content.enterContentZone"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "remove_consent"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "disable_offline_mode"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "add_event", { key: "test", count: 1, sum: 1, dur: 1, segmentation: { test: "test" } }]);
+        Countbase.q.push(["YOUR_APP_KEY3", "start_event", "test"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "cancel_event", "gobbledygook"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "end_event", "test"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "report_conversion", "camp_id", "camp_user_id"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "recordDirectAttribution", "camp_id", "camp_user_id"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "user_details", { name: "name" }]);
+        Countbase.q.push(["YOUR_APP_KEY3", "userData.set", "set", "set"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "userData.save"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "report_trace", { name: "name", stz: 1, type: "type" }]);
+        Countbase.q.push(["YOUR_APP_KEY3", "log_error", { error: "error", stack: "stack" }]);
+        Countbase.q.push(["YOUR_APP_KEY3", "add_log", "error"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "fetch_remote_config"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "enrollUserToAb"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "track_sessions"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "track_pageview"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "track_errors"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "track_clicks"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "track_scrolls"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "track_links"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "track_forms"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "collect_from_forms"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "collect_from_facebook"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "opt_in"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "feedback.showNPS"]);
+        Countbase.q.push(["YOUR_APP_KEY3", "content.enterContentZone"]);
 
         //initialize fourth instance for another app asynchronously
-        Countly.q.push(["init", {
+        Countbase.q.push(["init", {
             app_key: "YOUR_APP_KEY4", //must have different APP key
             url: "https://your.domain.count.ly",
             test_mode: true
 
         }])
-        Countly.q.push(["YOUR_APP_KEY4", "remove_consent"]);
-        Countly.q.push(["YOUR_APP_KEY4", "disable_offline_mode"]);
-        Countly.q.push(["YOUR_APP_KEY4", "add_event", { key: "test", count: 1, sum: 1, dur: 1, segmentation: { test: "test" } }]);
-        Countly.q.push(["YOUR_APP_KEY4", "start_event", "test"]);
-        Countly.q.push(["YOUR_APP_KEY4", "cancel_event", "gobbledygook"]);
-        Countly.q.push(["YOUR_APP_KEY4", "end_event", "test"]);
-        Countly.q.push(["YOUR_APP_KEY4", "report_conversion", "camp_id", "camp_user_id"]);
-        Countly.q.push(["YOUR_APP_KEY4", "recordDirectAttribution", "camp_id", "camp_user_id"]);
-        Countly.q.push(["YOUR_APP_KEY4", "user_details", { name: "name" }]);
-        Countly.q.push(["YOUR_APP_KEY4", "userData.set", "set", "set"]);
-        Countly.q.push(["YOUR_APP_KEY4", "userData.save"]);
-        Countly.q.push(["YOUR_APP_KEY4", "report_trace", { name: "name", stz: 1, type: "type" }]);
-        Countly.q.push(["YOUR_APP_KEY4", "log_error", { error: "error", stack: "stack" }]);
-        Countly.q.push(["YOUR_APP_KEY4", "add_log", "error"]);
-        Countly.q.push(["YOUR_APP_KEY4", "fetch_remote_config"]);
-        Countly.q.push(["YOUR_APP_KEY4", "enrollUserToAb"]);
-        Countly.q.push(["YOUR_APP_KEY4", "track_sessions"]);
-        Countly.q.push(["YOUR_APP_KEY4", "track_pageview"]);
-        Countly.q.push(["YOUR_APP_KEY4", "track_errors"]);
-        Countly.q.push(["YOUR_APP_KEY4", "track_clicks"]);
-        Countly.q.push(["YOUR_APP_KEY4", "track_scrolls"]);
-        Countly.q.push(["YOUR_APP_KEY4", "track_links"]);
-        Countly.q.push(["YOUR_APP_KEY4", "track_forms"]);
-        Countly.q.push(["YOUR_APP_KEY4", "collect_from_forms"]);
-        Countly.q.push(["YOUR_APP_KEY4", "collect_from_facebook"]);
-        Countly.q.push(["YOUR_APP_KEY4", "opt_in"]);
-        Countly.q.push(["YOUR_APP_KEY4", "feedback.showNPS"]);
-        Countly.q.push(["YOUR_APP_KEY4", "content.enterContentZone"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "remove_consent"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "disable_offline_mode"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "add_event", { key: "test", count: 1, sum: 1, dur: 1, segmentation: { test: "test" } }]);
+        Countbase.q.push(["YOUR_APP_KEY4", "start_event", "test"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "cancel_event", "gobbledygook"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "end_event", "test"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "report_conversion", "camp_id", "camp_user_id"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "recordDirectAttribution", "camp_id", "camp_user_id"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "user_details", { name: "name" }]);
+        Countbase.q.push(["YOUR_APP_KEY4", "userData.set", "set", "set"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "userData.save"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "report_trace", { name: "name", stz: 1, type: "type" }]);
+        Countbase.q.push(["YOUR_APP_KEY4", "log_error", { error: "error", stack: "stack" }]);
+        Countbase.q.push(["YOUR_APP_KEY4", "add_log", "error"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "fetch_remote_config"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "enrollUserToAb"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "track_sessions"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "track_pageview"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "track_errors"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "track_clicks"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "track_scrolls"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "track_links"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "track_forms"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "collect_from_forms"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "collect_from_facebook"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "opt_in"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "feedback.showNPS"]);
+        Countbase.q.push(["YOUR_APP_KEY4", "content.enterContentZone"]);
     </script>
 </head>
 </html>

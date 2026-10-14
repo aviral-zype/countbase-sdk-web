@@ -7,25 +7,25 @@ Example on collecting user information from submitted forms
 	<!-- Page styling here -->
 	<link rel='stylesheet' type='text/css' href='./style/style.css'>
 
-	<!--Countly script-->
-	<script type='text/javascript' src='../lib/countly.js'></script>
+	<!--Countbase script-->
+	<script type='text/javascript' src='../lib/countbase.js'></script>
 	<script type='text/javascript'>
 
-		const COUNTLY_SERVER_KEY = "https://your.server.ly";
-		const COUNTLY_APP_KEY = "YOUR_APP_KEY";
+		const COUNTBASE_SERVER_KEY = "https://your.server.ly";
+		const COUNTBASE_APP_KEY = "YOUR_APP_KEY";
 
-		if (COUNTLY_APP_KEY === "YOUR_APP_KEY" || COUNTLY_SERVER_KEY === "https://your.server.ly") {
+		if (COUNTBASE_APP_KEY === "YOUR_APP_KEY" || COUNTBASE_SERVER_KEY === "https://your.server.ly") {
 			console.warn("Please do not use default set of app key and server url")
 		}
-		// initializing countly with params
-		Countly.init({
-			app_key: COUNTLY_APP_KEY,
-			url: COUNTLY_SERVER_KEY, //your server goes here
+		// initializing countbase with params
+		Countbase.init({
+			app_key: COUNTBASE_APP_KEY,
+			url: COUNTBASE_SERVER_KEY, //your server goes here
 			debug: true
 		});
-		Countly.begin_session();
+		Countbase.begin_session();
 		//gather user information automatically
-		Countly.collect_from_forms(document, true);
+		Countbase.collect_from_forms(document, true);
 	</script>
 </head>
 
@@ -37,7 +37,7 @@ Example on collecting user information from submitted forms
 	</div>
 
 	<center>
-		<img src="./images/team_countly.jpg" id="wallpaper" />
+		<img src="./images/team_countbase.jpg" id="wallpaper" />
 		<form method='post' name='test_form'>
 			<!-- ignore this input -->
 			<p><input type="text" name="e" value="notmyemail@notmydomain.com" class="cly_user_ignore"></p>

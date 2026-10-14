@@ -84,11 +84,11 @@
  * +--------------------------------------------------+------------------------------------+----------------------+
  */
 
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper");
 
 function initMain(deviceId, offline, searchQuery, clear) {
-    Countly.init({
+    Countbase.init({
         app_key: hp.appKey,
         url: "https://d.count.ly",
         device_id: deviceId,
@@ -103,20 +103,20 @@ function initMain(deviceId, offline, searchQuery, clear) {
 function validateSdkGeneratedId(providedDeviceId) {
     expect(providedDeviceId).to.exist;
     expect(providedDeviceId.length).to.eq(36);
-    expect(Countly._internals.isUUID(providedDeviceId)).to.be.ok;
+    expect(Countbase._internals.isUUID(providedDeviceId)).to.be.ok;
 }
 function validateInternalDeviceIdType(expectedType) {
-    expect(expectedType).to.eq(Countly._internals.getInternalDeviceIdType());
+    expect(expectedType).to.eq(Countbase._internals.getInternalDeviceIdType());
 }
 function checkRequestsForT(queue, expectedInternalType) {
     for (var i = 0; i < queue.length; i++) {
         expect(queue[i].t).to.exist;
-        expect(queue[i].t).to.eq(Countly._internals.getInternalDeviceIdType());
+        expect(queue[i].t).to.eq(Countbase._internals.getInternalDeviceIdType());
         expect(queue[i].t).to.eq(expectedInternalType);
     }
 }
 function checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType, temp, afterOffline) {
-    var directReqs = Countly._internals.testingGetRequests(); // get direct requests
+    var directReqs = Countbase._internals.testingGetRequests(); // get direct requests
     cy.log("Requests: " + JSON.stringify(directReqs));
 
     expect(directReqs.length).to.eq(temp ? 0 : afterOffline ? 4 : 3);
@@ -131,7 +131,7 @@ function checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType, t
     }
 }
 function checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType) {
-    var queues = Countly._internals.getLocalQueues(); // get local queues
+    var queues = Countbase._internals.getLocalQueues(); // get local queues
     cy.log("Queues: " + JSON.stringify(queues));
 
     expect(queues.eventQ.length).to.eq(0);
@@ -144,7 +144,7 @@ function checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType) {
 }
 
 function checkStoredReqQueueAfterIDChange(changedID, changedIDType, afterOffline) {
-    var queues = Countly._internals.getLocalQueues(); // get local queues
+    var queues = Countbase._internals.getLocalQueues(); // get local queues
     cy.log("QueuesE: " + JSON.stringify(queues.eventQ));
     cy.log("QueuesQ: " + JSON.stringify(queues.requestQ));
     // print each item in the queue
@@ -173,16 +173,16 @@ function checkStoredReqQueueAfterIDChange(changedID, changedIDType, afterOffline
 
 function generateSomeEvents() {
     // some events/requests
-    Countly.begin_session();
-    Countly.track_pageview();
-    Countly.add_event({ key: "test", segmentation: { "segment": "segment" } });
+    Countbase.begin_session();
+    Countbase.track_pageview();
+    Countbase.add_event({ key: "test", segmentation: { "segment": "segment" } });
 }
 
 function setURLCheck(deviceID) {
-    const afterInitDeviceId = Countly.get_device_id();
-    const afterInitDeviceIdType = Countly.get_device_id_type();
+    const afterInitDeviceId = Countbase.get_device_id();
+    const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-    expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+    expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
     expect(afterInitDeviceId).to.eq(deviceID);
     validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -203,10 +203,10 @@ function storedIDUsingTests(customID, offline, utm) {
 
             initMain(customID, offline, utm);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("storedID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -223,15 +223,15 @@ function storedIDUsingTests(customID, offline, utm) {
 }
 
 function changeIDTests(afterInitDeviceId, afterInitDeviceIdType, afterOffline) {
-    Countly.change_id("id_1");
-    const changedID = Countly.get_device_id();
-    const changedIDType = Countly.get_device_id_type();
+    Countbase.change_id("id_1");
+    const changedID = Countbase.get_device_id();
+    const changedIDType = Countbase.get_device_id_type();
     if (afterOffline) {
         afterInitDeviceId = changedID;
         afterInitDeviceIdType = changedIDType;
     }
 
-    expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+    expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
     expect(changedID).to.eq("id_1");
     validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -244,12 +244,12 @@ function changeIDTests(afterInitDeviceId, afterInitDeviceIdType, afterOffline) {
 
         // after ID events
         checkStoredReqQueueAfterIDChange(changedID, changedIDType, afterOffline);
-        Countly.enable_offline_mode();
-        Countly.change_id("id_2");
-        const changedID2 = Countly.get_device_id();
-        const changedIDType2 = Countly.get_device_id_type();
+        Countbase.enable_offline_mode();
+        Countbase.change_id("id_2");
+        const changedID2 = Countbase.get_device_id();
+        const changedIDType2 = Countbase.get_device_id_type();
 
-        expect(changedIDType2).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+        expect(changedIDType2).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
         expect(changedID2).to.eq("id_2");
         validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -270,8 +270,8 @@ function changeIDTests(afterInitDeviceId, afterInitDeviceIdType, afterOffline) {
 /**
  *device ID type:
     *0 - device ID was set by the developer during init
-    *1 - device ID was auto generated by Countly
-    *2 - device ID was temporarily given by Countly
+    *1 - device ID was auto generated by Countbase
+    *2 - device ID was temporarily given by Countbase
     *3 - device ID was provided from location.search
  */
 var DeviceIdTypeInternalEnumsTest = {
@@ -288,10 +288,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.eq(Countly.DeviceIdType.SDK_GENERATED);
+            expect(afterInitDeviceIdType).to.eq(Countbase.DeviceIdType.SDK_GENERATED);
             validateSdkGeneratedId(afterInitDeviceId);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
 
@@ -310,10 +310,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain("customID", false, undefined);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("customID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -333,10 +333,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, true, undefined);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.TEMPORARY_ID);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.TEMPORARY_ID);
             expect(afterInitDeviceId).to.eq("[CLY]_temp_id");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
 
@@ -360,10 +360,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain("customID", true, undefined);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("customID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -402,10 +402,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.SDK_GENERATED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             generateSomeEvents();
 
@@ -413,11 +413,11 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -439,10 +439,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.SDK_GENERATED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             generateSomeEvents();
 
@@ -450,12 +450,12 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.enable_offline_mode();
-                Countly.change_id("newID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.enable_offline_mode();
+                Countbase.change_id("newID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("newID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -477,10 +477,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain("initID", false, undefined);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("initID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
             generateSomeEvents();
@@ -489,11 +489,11 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -514,10 +514,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain("initID", false, undefined);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("initID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
             generateSomeEvents();
@@ -526,12 +526,12 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.enable_offline_mode();
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.enable_offline_mode();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -553,10 +553,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, true, undefined);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.TEMPORARY_ID);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.TEMPORARY_ID);
             expect(afterInitDeviceId).to.eq("[CLY]_temp_id");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
             generateSomeEvents();
@@ -565,11 +565,11 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType, true);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -590,10 +590,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, true, undefined);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.TEMPORARY_ID);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.TEMPORARY_ID);
             expect(afterInitDeviceId).to.eq("[CLY]_temp_id");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
             generateSomeEvents();
@@ -602,12 +602,12 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType, true);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.enable_offline_mode();
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.enable_offline_mode();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -629,10 +629,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, "?cly_device_id=someID");
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("someID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
             generateSomeEvents();
@@ -641,11 +641,11 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
                 checkEachStoredReqForIDandT(afterInitDeviceId, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -666,10 +666,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, "?cly_device_id=someID");
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("someID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
             generateSomeEvents();
@@ -678,12 +678,12 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
                 checkEachStoredReqForIDandT(afterInitDeviceId, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
-                Countly.enable_offline_mode();
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.enable_offline_mode();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -735,10 +735,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, undefined, undefined);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.TEMPORARY_ID);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.TEMPORARY_ID);
                 expect(afterInitDeviceId).to.eq("[CLY]_temp_id");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
 
@@ -760,10 +760,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("initID", undefined, undefined);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("initID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -785,10 +785,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, true, undefined);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.TEMPORARY_ID);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.TEMPORARY_ID);
                 expect(afterInitDeviceId).to.eq("[CLY]_temp_id");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
 
@@ -810,10 +810,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, undefined, "?cly_device_id=abab");
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -835,10 +835,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("randomID", true, undefined);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("randomID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -860,10 +860,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("randomID", undefined, "?cly_device_id=abab");
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -885,10 +885,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, true, "?cly_device_id=abab");
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -910,10 +910,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("randomID", true, "?cly_device_id=abab");
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -938,10 +938,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, undefined, undefined, true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.SDK_GENERATED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
                 expect(afterInitDeviceId).to.not.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
 
@@ -963,10 +963,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("randomID", undefined, undefined, true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("randomID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -988,10 +988,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, true, undefined, true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.TEMPORARY_ID);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.TEMPORARY_ID);
                 expect(afterInitDeviceId).to.eq("[CLY]_temp_id");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
 
@@ -1013,10 +1013,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, undefined, "?cly_device_id=abab", true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -1038,10 +1038,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("randomID", true, undefined, true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("randomID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1063,10 +1063,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("randomID", undefined, "?cly_device_id=abab", true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -1088,10 +1088,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, true, "?cly_device_id=abab", true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -1113,10 +1113,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("randomID", true, "?cly_device_id=abab", true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -1140,10 +1140,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, undefined, undefined, true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.SDK_GENERATED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
                 expect(afterInitDeviceId).to.not.eq("[CLY]_temp_id");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
 
@@ -1165,10 +1165,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("randomID", undefined, undefined, true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("randomID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1190,10 +1190,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, true, undefined, true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.TEMPORARY_ID);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.TEMPORARY_ID);
                 expect(afterInitDeviceId).to.eq("[CLY]_temp_id");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
 
@@ -1215,10 +1215,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, undefined, "?cly_device_id=abab", true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -1240,10 +1240,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("randomID", true, undefined, true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("randomID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1265,10 +1265,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("randomID", undefined, "?cly_device_id=abab", true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -1290,10 +1290,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain(undefined, true, "?cly_device_id=abab", true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -1315,10 +1315,10 @@ describe("Device Id tests during first init", () => {
 
                 initMain("randomID", true, "?cly_device_id=abab", true);
 
-                const afterInitDeviceId = Countly.get_device_id();
-                const afterInitDeviceIdType = Countly.get_device_id_type();
+                const afterInitDeviceId = Countbase.get_device_id();
+                const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-                expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(afterInitDeviceId).to.eq("abab");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
@@ -1338,14 +1338,14 @@ describe("Device Id tests during first init", () => {
     it("49-Stored UUID precedence, SDK is initialized with no device id, not offline mode, no utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain(undefined, false, undefined);
-            validateSdkGeneratedId(Countly.get_device_id());
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.SDK_GENERATED);
-            expect(Countly.get_device_id()).to.eq(oldUUID);
+            validateSdkGeneratedId(Countbase.get_device_id());
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
+            expect(Countbase.get_device_id()).to.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             });
@@ -1354,14 +1354,14 @@ describe("Device Id tests during first init", () => {
     it("50-Stored UUID precedence, SDK is initialized with device id, not offline mode, no utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain("counterID", false, undefined);
-            validateSdkGeneratedId(Countly.get_device_id());
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.SDK_GENERATED);
-            expect(Countly.get_device_id()).to.eq(oldUUID);
+            validateSdkGeneratedId(Countbase.get_device_id());
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
+            expect(Countbase.get_device_id()).to.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             });
@@ -1370,14 +1370,14 @@ describe("Device Id tests during first init", () => {
     it("51-Stored UUID precedence, SDK is initialized with no device id, offline mode, no utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain(undefined, true, undefined);
-            validateSdkGeneratedId(Countly.get_device_id());
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.SDK_GENERATED);
-            expect(Countly.get_device_id()).to.eq(oldUUID);
+            validateSdkGeneratedId(Countbase.get_device_id());
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
+            expect(Countbase.get_device_id()).to.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             });
@@ -1386,14 +1386,14 @@ describe("Device Id tests during first init", () => {
     it("52-Stored UUID precedence, SDK is initialized with no device id, no offline mode, utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain(undefined, false, "?cly_device_id=abab");
-            validateSdkGeneratedId(Countly.get_device_id());
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.SDK_GENERATED);
-            expect(Countly.get_device_id()).to.eq(oldUUID);
+            validateSdkGeneratedId(Countbase.get_device_id());
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
+            expect(Countbase.get_device_id()).to.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             });
@@ -1402,14 +1402,14 @@ describe("Device Id tests during first init", () => {
     it("53-Stored UUID precedence, SDK is initialized with device id, offline mode, no utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain("counterID", true, undefined);
-            validateSdkGeneratedId(Countly.get_device_id());
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.SDK_GENERATED);
-            expect(Countly.get_device_id()).to.eq(oldUUID);
+            validateSdkGeneratedId(Countbase.get_device_id());
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
+            expect(Countbase.get_device_id()).to.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             });
@@ -1418,14 +1418,14 @@ describe("Device Id tests during first init", () => {
     it("54-Stored UUID precedence, SDK is initialized with device id, no offline mode, utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain("counterID", false, "?cly_device_id=abab");
-            validateSdkGeneratedId(Countly.get_device_id());
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.SDK_GENERATED);
-            expect(Countly.get_device_id()).to.eq(oldUUID);
+            validateSdkGeneratedId(Countbase.get_device_id());
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
+            expect(Countbase.get_device_id()).to.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             });
@@ -1434,14 +1434,14 @@ describe("Device Id tests during first init", () => {
     it("55-Stored UUID precedence, SDK is initialized no device id, offline mode, utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain(undefined, true, "?cly_device_id=abab");
-            validateSdkGeneratedId(Countly.get_device_id());
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.SDK_GENERATED);
-            expect(Countly.get_device_id()).to.eq(oldUUID);
+            validateSdkGeneratedId(Countbase.get_device_id());
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
+            expect(Countbase.get_device_id()).to.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             });
@@ -1450,14 +1450,14 @@ describe("Device Id tests during first init", () => {
     it("56-Stored UUID precedence, SDK is initialized with device id, offline mode, utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain("counterID", true, "?cly_device_id=abab");
-            validateSdkGeneratedId(Countly.get_device_id());
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.SDK_GENERATED);
-            expect(Countly.get_device_id()).to.eq(oldUUID);
+            validateSdkGeneratedId(Countbase.get_device_id());
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
+            expect(Countbase.get_device_id()).to.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             });
@@ -1468,14 +1468,14 @@ describe("Device Id tests during first init", () => {
     it("57-Stored UUID precedence, SDK is initialized with no device id, not offline mode, no utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain(undefined, false, undefined, true);
-            validateSdkGeneratedId(Countly.get_device_id());
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.SDK_GENERATED);
-            expect(Countly.get_device_id()).to.not.eq(oldUUID);
+            validateSdkGeneratedId(Countbase.get_device_id());
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
+            expect(Countbase.get_device_id()).to.not.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             });
@@ -1484,13 +1484,13 @@ describe("Device Id tests during first init", () => {
     it("58-Stored UUID precedence, SDK is initialized with device id, not offline mode, no utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain("counterID", false, undefined, true);
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
-            expect(Countly.get_device_id()).to.not.eq(oldUUID);
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(Countbase.get_device_id()).to.not.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
             });
@@ -1499,13 +1499,13 @@ describe("Device Id tests during first init", () => {
     it("59-Stored UUID precedence, SDK is initialized with no device id, offline mode, no utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain(undefined, true, undefined, true);
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.TEMPORARY_ID);
-            expect(Countly.get_device_id()).to.not.eq(oldUUID);
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.TEMPORARY_ID);
+            expect(Countbase.get_device_id()).to.not.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
             });
@@ -1514,13 +1514,13 @@ describe("Device Id tests during first init", () => {
     it("60-Stored UUID precedence, SDK is initialized with no device id, no offline mode, utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain(undefined, false, "?cly_device_id=abab", true);
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
-            expect(Countly.get_device_id()).to.not.eq(oldUUID);
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(Countbase.get_device_id()).to.not.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
             });
@@ -1529,13 +1529,13 @@ describe("Device Id tests during first init", () => {
     it("61-Stored UUID precedence, SDK is initialized with device id, offline mode, no utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain("counterID", true, undefined, true);
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
-            expect(Countly.get_device_id()).to.not.eq(oldUUID);
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(Countbase.get_device_id()).to.not.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
             });
@@ -1544,13 +1544,13 @@ describe("Device Id tests during first init", () => {
     it("62-Stored UUID precedence, SDK is initialized with device id, no offline mode, utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain("counterID", false, "?cly_device_id=abab", true);
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
-            expect(Countly.get_device_id()).to.not.eq(oldUUID);
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(Countbase.get_device_id()).to.not.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
             });
@@ -1559,13 +1559,13 @@ describe("Device Id tests during first init", () => {
     it("63-Stored UUID precedence, SDK is initialized no device id, offline mode, utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain(undefined, true, "?cly_device_id=abab", true);
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
-            expect(Countly.get_device_id()).to.not.eq(oldUUID);
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(Countbase.get_device_id()).to.not.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
             });
@@ -1574,13 +1574,13 @@ describe("Device Id tests during first init", () => {
     it("64-Stored UUID precedence, SDK is initialized with device id, offline mode, utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined);
-            var oldUUID = Countly.get_device_id();
-            Countly.halt();
+            var oldUUID = Countbase.get_device_id();
+            Countbase.halt();
             initMain("counterID", true, "?cly_device_id=abab", true);
-            expect(Countly.get_device_id_type()).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
-            expect(Countly.get_device_id()).to.not.eq(oldUUID);
+            expect(Countbase.get_device_id_type()).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(Countbase.get_device_id()).to.not.eq(oldUUID);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
-            Countly.begin_session();
+            Countbase.begin_session();
             cy.fetch_local_request_queue().then((eq) => {
                 checkRequestsForT(eq, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
             });
@@ -1591,10 +1591,10 @@ describe("Device Id tests during first init", () => {
     it("65-SDK is initialized without custom device id, without offline mode, without utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined, true);
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.eq(Countly.DeviceIdType.SDK_GENERATED);
+            expect(afterInitDeviceIdType).to.eq(Countbase.DeviceIdType.SDK_GENERATED);
             validateSdkGeneratedId(afterInitDeviceId);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
 
@@ -1612,10 +1612,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain("customID", false, undefined, true);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("customID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1633,10 +1633,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, true, undefined, true);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.TEMPORARY_ID);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.TEMPORARY_ID);
             expect(afterInitDeviceId).to.eq("[CLY]_temp_id");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
 
@@ -1658,10 +1658,10 @@ describe("Device Id tests during first init", () => {
     it("69-SDK is initialized with custom device id, with offline mode, without utm device id", () => {
         hp.haltAndClearStorage(() => {
             initMain("customID", true, undefined, true);
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("customID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1699,10 +1699,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined, true);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.SDK_GENERATED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             generateSomeEvents();
 
@@ -1710,11 +1710,11 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1736,10 +1736,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, undefined, true);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.SDK_GENERATED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.SDK_GENERATED);
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.SDK_GENERATED);
             generateSomeEvents();
 
@@ -1747,12 +1747,12 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.enable_offline_mode();
-                Countly.change_id("newID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.enable_offline_mode();
+                Countbase.change_id("newID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("newID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1774,10 +1774,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain("initID", false, undefined, true);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("initID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
             generateSomeEvents();
@@ -1786,11 +1786,11 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1811,10 +1811,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain("initID", false, undefined, true);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("initID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
             generateSomeEvents();
@@ -1823,12 +1823,12 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.enable_offline_mode();
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.enable_offline_mode();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1850,10 +1850,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, true, undefined, true);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.TEMPORARY_ID);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.TEMPORARY_ID);
             expect(afterInitDeviceId).to.eq("[CLY]_temp_id");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
             generateSomeEvents();
@@ -1862,11 +1862,11 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType, true);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1887,10 +1887,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, true, undefined, true);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.TEMPORARY_ID);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.TEMPORARY_ID);
             expect(afterInitDeviceId).to.eq("[CLY]_temp_id");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.TEMPORARY_ID);
             generateSomeEvents();
@@ -1899,12 +1899,12 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, afterInitDeviceIdType, true);
                 checkEachStoredReqForIDandT(afterInitDeviceId, afterInitDeviceIdType);
 
-                Countly.enable_offline_mode();
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.enable_offline_mode();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1926,10 +1926,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, "?cly_device_id=someID", true);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("someID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
             generateSomeEvents();
@@ -1938,11 +1938,11 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
                 checkEachStoredReqForIDandT(afterInitDeviceId, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 
@@ -1963,10 +1963,10 @@ describe("Device Id tests during first init", () => {
         hp.haltAndClearStorage(() => {
             initMain(undefined, false, "?cly_device_id=someID", true);
 
-            const afterInitDeviceId = Countly.get_device_id();
-            const afterInitDeviceIdType = Countly.get_device_id_type();
+            const afterInitDeviceId = Countbase.get_device_id();
+            const afterInitDeviceIdType = Countbase.get_device_id_type();
 
-            expect(afterInitDeviceIdType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+            expect(afterInitDeviceIdType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
             expect(afterInitDeviceId).to.eq("someID");
             validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
             generateSomeEvents();
@@ -1975,12 +1975,12 @@ describe("Device Id tests during first init", () => {
                 checkEachDirectReqForIDandT(afterInitDeviceId, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
                 checkEachStoredReqForIDandT(afterInitDeviceId, DeviceIdTypeInternalEnumsTest.URL_PROVIDED);
 
-                Countly.enable_offline_mode();
-                Countly.change_id("storedID");
-                const changedID = Countly.get_device_id();
-                const changedIDType = Countly.get_device_id_type();
+                Countbase.enable_offline_mode();
+                Countbase.change_id("storedID");
+                const changedID = Countbase.get_device_id();
+                const changedIDType = Countbase.get_device_id_type();
 
-                expect(changedIDType).to.equal(Countly.DeviceIdType.DEVELOPER_SUPPLIED);
+                expect(changedIDType).to.equal(Countbase.DeviceIdType.DEVELOPER_SUPPLIED);
                 expect(changedID).to.eq("storedID");
                 validateInternalDeviceIdType(DeviceIdTypeInternalEnumsTest.DEVELOPER_SUPPLIED);
 

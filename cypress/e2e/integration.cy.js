@@ -1,11 +1,11 @@
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper");
 
 /**
- *  init countly
+ *  init countbase
  */
 function initMain() {
-    Countly.init({
+    Countbase.init({
         app_key: "YOUR_APP_KEY",
         url: "https://your.domain.count.ly",
         debug: true,
@@ -16,10 +16,10 @@ function initMain() {
 describe("Integration test", () => {
     it("int, no consent, no offline_mode", () => {
         initMain();
-        var consentStatus = Countly.check_any_consent();
-        var remote = Countly.get_remote_config();
-        var id = Countly.get_device_id();
-        var idType = Countly.get_device_id_type();
+        var consentStatus = Countbase.check_any_consent();
+        var remote = Countbase.get_remote_config();
+        var id = Countbase.get_device_id();
+        var idType = Countbase.get_device_id_type();
         hp.integrationMethods();
         cy.fetch_local_request_queue().then((rq) => {
             cy.log(rq);

@@ -1,10 +1,10 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 /* eslint-disable require-jsdoc */
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper");
 
 function initMain() {
-    Countly.init({
+    Countbase.init({
         app_key: "YOUR_APP_KEY",
         url: "https://your.domain.count.ly",
         test_mode: true,
@@ -22,7 +22,7 @@ describe("Upload user profile picture", () => {
             const base64Png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=";
             const binary = Cypress.Blob.base64StringToBlob(base64Png, 'image/png');
             binary.name = "avatar.png";
-            Countly.uploadUserProfilePicture(binary);
+            Countbase.uploadUserProfilePicture(binary);
 
             cy.wait(500).then(() => {
                 cy.getLocalStorage("YOUR_APP_KEY/cly_queue").then((val) => {
@@ -50,7 +50,7 @@ describe("Upload user profile picture", () => {
 
             const txtBlob = new Blob(["hello world"], { type: 'text/plain' });
             txtBlob.name = "test.txt";
-            Countly.uploadUserProfilePicture(txtBlob);
+            Countbase.uploadUserProfilePicture(txtBlob);
 
             cy.wait(300).then(() => {
                 cy.getLocalStorage("YOUR_APP_KEY/cly_queue").then((val) => {

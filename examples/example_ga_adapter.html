@@ -6,30 +6,30 @@
 
 	<script type='text/javascript'>
 		//some default pre init
-		var Countly = Countly || {};
-		Countly.q = Countly.q || [];
-		Countly.onload = Countly.onload || [];
-		//provide countly initialization parameters
-		Countly.app_key = "YOUR_APP_KEY";
-		Countly.url = "https://your.server.ly"; //your server goes here
+		var Countbase = Countbase || {};
+		Countbase.q = Countbase.q || [];
+		Countbase.onload = Countbase.onload || [];
+		//provide countbase initialization parameters
+		Countbase.app_key = "YOUR_APP_KEY";
+		Countbase.url = "https://your.server.ly"; //your server goes here
 
-		if (Countly.app_key === "YOUR_APP_KEY" || Countly.url === "https://your.server.ly") {
+		if (Countbase.app_key === "YOUR_APP_KEY" || Countbase.url === "https://your.server.ly") {
 			console.warn("Please do not use default set of app key and server url")
 		}
-		Countly.debug = true;
+		Countbase.debug = true;
 		window.cly_ga_test_mode = true;
-		Countly.test_logs = [];
+		Countbase.test_logs = [];
 		//start pushing function calls to queue
 		//track sessions automatically
 
 
-		//load countly script asynchronously
+		//load countbase script asynchronously
 		(function () {
 			var cly = document.createElement('script'); cly.type = 'text/javascript';
 			cly.async = true;
 			//enter url of script here
-			cly.src = '../lib/countly.js';
-			cly.onload = function () { Countly.init() };
+			cly.src = '../lib/countbase.js';
+			cly.onload = function () { Countbase.init() };
 			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(cly, s);
 		})();
 	</script>
@@ -42,8 +42,8 @@
 				m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
 		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-		Countly.onload.push(function () {
-			CountlyGAAdapter();
+		Countbase.onload.push(function () {
+			CountbaseGAAdapter();
 			// call create call with ga id
 			ga('create', 'UA-56295140-3', 'auto');
 
@@ -187,7 +187,7 @@
 	</div>
 
 	<center>
-		<img src="./images/team_countly.jpg" id="wallpaper" />
+		<img src="./images/team_countbase.jpg" id="wallpaper" />
 	</center>
 </body>
 

@@ -3,30 +3,30 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App-WithEffect';
 import * as serviceWorker from './serviceWorker';
-import Countly from 'countly-sdk-web';
+import Countbase from 'countbase-sdk-web';
 
-//Exposing Countly to the DOM as a global variable
+//Exposing Countbase to the DOM as a global variable
 //Usecase - Heatmaps
-window.Countly = Countly;
+window.Countbase = Countbase;
 
-const COUNTLY_SERVER_KEY = "https://your.server.ly";
-const COUNTLY_APP_KEY = "YOUR_APP_KEY";
+const COUNTBASE_SERVER_KEY = "https://your.server.ly";
+const COUNTBASE_APP_KEY = "YOUR_APP_KEY";
 
-if (COUNTLY_APP_KEY === "YOUR_APP_KEY" || COUNTLY_SERVER_KEY === "https://your.server.ly") {
+if (COUNTBASE_APP_KEY === "YOUR_APP_KEY" || COUNTBASE_SERVER_KEY === "https://your.server.ly") {
   console.warn("Please do not use default set of app key and server url")
 }
-// initializing countly with params
-Countly.init({
-  app_key: COUNTLY_APP_KEY,
-  url: COUNTLY_SERVER_KEY, //your server goes here
+// initializing countbase with params
+Countbase.init({
+  app_key: COUNTBASE_APP_KEY,
+  url: COUNTBASE_SERVER_KEY, //your server goes here
   debug: true
 });
 
-Countly.q.push(['track_sessions']);
-Countly.q.push(['track_scrolls']);
-Countly.q.push(['track_clicks']);
-Countly.q.push(['track_links']);
-Countly.q.push(["track_errors"]);
+Countbase.q.push(['track_sessions']);
+Countbase.q.push(['track_scrolls']);
+Countbase.q.push(['track_clicks']);
+Countbase.q.push(['track_links']);
+Countbase.q.push(["track_errors"]);
 
 ReactDOM.render(
   <React.StrictMode>

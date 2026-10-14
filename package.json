@@ -1,16 +1,16 @@
 {
-  "name": "countly-sdk-web",
+  "name": "countbase-sdk-web",
   "version": "26.1.2",
-  "description": "Countly Web SDK",
-  "main": "lib/countly.js",
-  "types": "lib/countly.d.ts",
+  "description": "Countbase Web SDK: analytics, crash reporting and feedback for websites (based on the Countly Web SDK)",
+  "main": "lib/countbase.js",
+  "types": "lib/countbase.d.ts",
   "directories": {
     "example": "examples",
     "lib": "lib",
     "test": "test"
   },
   "scripts": {
-    "docs": "node_modules/.bin/jsdoc lib/countly.js README.md -c jsdoc_conf.json -d docs",
+    "docs": "node_modules/.bin/jsdoc lib/countbase.js README.md -c jsdoc_conf.json -d docs",
     "build": "webpack",
     "lint": "./node_modules/.bin/eslint --ignore-path .eslintignore --fix .",
     "lintMD": "markdownlint **/*.md --fix",
@@ -21,19 +21,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Countly/countly-sdk-web"
+    "url": "git+https://github.com/aviral-zype/countbase-sdk-web.git"
   },
   "keywords": [
-    "Countly",
-    "Analytics",
-    "Web"
+    "countbase",
+    "analytics",
+    "web",
+    "sdk"
   ],
-  "author": "Countly <hello@count.ly> (https://countly.com/)",
+  "author": "Countbase",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Countly/countly-sdk-web/issues"
+    "url": "https://github.com/aviral-zype/countbase-sdk-web/issues"
   },
-  "homepage": "https://countly.com/",
+  "homepage": "https://github.com/aviral-zype/countbase-sdk-web#readme",
   "devDependencies": {
     "cypress": "13.6.0",
     "cypress-localstorage-commands": "2.2.5",
@@ -47,13 +48,20 @@
     "stylelint": "14.9.1",
     "stylelint-config-standard": "28.0.0"
   },
-  "npmName": "countly-sdk-web",
+  "npmName": "countbase-sdk-web",
   "npmFileMap": [
     {
       "basePath": "lib",
       "files": [
-        "countly.min.js"
+        "countbase.min.js"
       ]
     }
+  ],
+  "files": [
+    "lib/",
+    "plugin/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ]
 }

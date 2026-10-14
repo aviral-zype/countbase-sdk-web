@@ -1,9 +1,9 @@
 
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper.js");
 
 function initMain(val, disableSync) {
-    Countly.init({
+    Countbase.init({
         app_key: "spp",
         url: "https://hey.some.ly",
         debug: true,
@@ -13,7 +13,7 @@ function initMain(val, disableSync) {
 }
 
 function sentReqList(size, expectedKeywords, nonexistingKeywords) {
-    var directReqs = Countly._internals.testingGetRequests(); // get direct requests
+    var directReqs = Countbase._internals.testingGetRequests(); // get direct requests
     var functionNames = directReqs.map((item) => item.functionName);
     cy.log("Direct Requests: " + JSON.stringify(directReqs));
 
@@ -32,7 +32,7 @@ function sentReqList(size, expectedKeywords, nonexistingKeywords) {
     }
 }
 function queues(eqsize, rqsize, expectedKeywords, nonexistingKeywords) {
-    var queues = Countly._internals.getLocalQueues(); // get local queues
+    var queues = Countbase._internals.getLocalQueues(); // get local queues
     const allKeysE = queues.eventQ.flatMap(item => Object.keys(item));
     const allKeysQ = queues.requestQ.flatMap(item => Object.keys(item));
     const uniqueKeys = [...new Set(allKeysE), ...new Set(allKeysQ)];
@@ -173,11 +173,11 @@ describe("SDK Behavior test", () => {
                 networking: false,
             };
             initMain(settings);
-            Countly.add_event({ key: "test_1" });
-            Countly.add_event({ key: "test_2" });
-            Countly.add_event({ key: "test_3" });
-            Countly.add_event({ key: "test_4" });
-            Countly.add_event({ key: "test_5" });
+            Countbase.add_event({ key: "test_1" });
+            Countbase.add_event({ key: "test_2" });
+            Countbase.add_event({ key: "test_3" });
+            Countbase.add_event({ key: "test_4" });
+            Countbase.add_event({ key: "test_5" });
             cy.wait(3000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
@@ -195,7 +195,7 @@ describe("SDK Behavior test", () => {
                 sui: 1,
             };
             initMain(settings);
-            Countly.track_sessions();
+            Countbase.track_sessions();
             cy.wait(4000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
@@ -217,10 +217,10 @@ describe("SDK Behavior test", () => {
                 cet: false,
             };
             initMain(settings);
-            Countly.track_sessions();
-            Countly.add_event({ key: "test_1" });
-            Countly.track_pageview();
-            Countly.log_error({ message: "test" });
+            Countbase.track_sessions();
+            Countbase.add_event({ key: "test_1" });
+            Countbase.track_pageview();
+            Countbase.log_error({ message: "test" });
             cy.wait(4000).then(() => {
                 cy.fetch_local_request_queue().then((rq) => {
                     cy.log("Request Queue: " + JSON.stringify(rq));
@@ -235,7 +235,7 @@ describe("SDK Behavior test", () => {
 describe("SDK Behavior Sync Disable tests", () => {
     it("Initialization with disable_sdk_behavior_settings_updates enabled - no server config request", () => {
         hp.haltAndClearStorage(() => {
-            Countly.init({
+            Countbase.init({
                 app_key: "spp",
                 url: "https://hey.some.ly",
                 debug: true,
@@ -254,7 +254,7 @@ describe("SDK Behavior Sync Disable tests", () => {
 
     it("Initialization with disable_sdk_behavior_settings_updates false - server config request made", () => {
         hp.haltAndClearStorage(() => {
-            Countly.init({
+            Countbase.init({
                 app_key: "spp",
                 url: "https://hey.some.ly",
                 debug: true,
@@ -273,7 +273,7 @@ describe("SDK Behavior Sync Disable tests", () => {
 
     it("Initialization without disable_sdk_behavior_settings_updates - default behavior (server config enabled)", () => {
         hp.haltAndClearStorage(() => {
-            Countly.init({
+            Countbase.init({
                 app_key: "spp",
                 url: "https://hey.some.ly",
                 debug: true
@@ -291,7 +291,7 @@ describe("SDK Behavior Sync Disable tests", () => {
 
     it("disable_sdk_behavior_settings_updates with integration methods - no server config interference", () => {
         hp.haltAndClearStorage(() => {
-            Countly.init({
+            Countbase.init({
                 app_key: "spp",
                 url: "https://hey.some.ly",
                 debug: true,
@@ -315,7 +315,7 @@ describe("SDK Behavior Sync Disable tests", () => {
             settings.c = {
                 networking: false
             };
-            Countly.init({
+            Countbase.init({
                 app_key: "spp",
                 url: "https://hey.some.ly",
                 debug: true,
@@ -340,7 +340,7 @@ describe("SDK Behavior Sync Disable tests", () => {
             settings.c = {
                 tracking: false
             };
-            Countly.init({
+            Countbase.init({
                 app_key: "spp",
                 url: "https://hey.some.ly",
                 debug: true,
@@ -365,7 +365,7 @@ describe("SDK Behavior Sync Disable tests", () => {
             settings.c = {
                 cr: true
             };
-            Countly.init({
+            Countbase.init({
                 app_key: "spp",
                 url: "https://hey.some.ly",
                 debug: true,

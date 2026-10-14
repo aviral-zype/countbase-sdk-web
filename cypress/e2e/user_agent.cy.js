@@ -1,10 +1,10 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 /* eslint-disable require-jsdoc */
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper");
 
 function initMain() {
-    Countly.init({
+    Countbase.init({
         app_key: "YOUR_APP_KEY",
         url: "https://your.domain.count.ly",
         test_mode_eq: true
@@ -37,37 +37,37 @@ describe("User Agent tests ", () => {
         hp.haltAndClearStorage(() => {
             initMain();
             // from the config file set ua value
-            expect(Countly._internals.currentUserAgentString()).to.equal("abcd");
+            expect(Countbase._internals.currentUserAgentString()).to.equal("abcd");
             // we override the ua string
-            expect(Countly._internals.currentUserAgentString("123")).to.equal("123");
+            expect(Countbase._internals.currentUserAgentString("123")).to.equal("123");
         });
     });
     it("Check if userAgentDeviceDetection works as intended", () => {
         hp.haltAndClearStorage(() => {
             initMain();
             // setting ua value to strings that can pass the regex test
-            expect(Countly._internals.userAgentDeviceDetection("123")).to.equal("desktop");
-            expect(Countly._internals.userAgentDeviceDetection("mobile")).to.equal("phone");
-            expect(Countly._internals.userAgentDeviceDetection("tablet")).to.equal("tablet");
+            expect(Countbase._internals.userAgentDeviceDetection("123")).to.equal("desktop");
+            expect(Countbase._internals.userAgentDeviceDetection("mobile")).to.equal("phone");
+            expect(Countbase._internals.userAgentDeviceDetection("tablet")).to.equal("tablet");
         });
     });
     it("Check if userAgentSearchBotDetection works as intended", () => {
         hp.haltAndClearStorage(() => {
             initMain();
             // setting ua value to strings that can pass the regex test
-            expect(Countly._internals.userAgentSearchBotDetection("")).to.equal(false);
-            expect(Countly._internals.userAgentSearchBotDetection("123")).to.equal(false);
-            expect(Countly._internals.userAgentSearchBotDetection("Googlebot")).to.equal(true);
-            expect(Countly._internals.userAgentSearchBotDetection("Google")).to.equal(false);
-            expect(Countly._internals.userAgentSearchBotDetection("HeadlessChrome")).to.equal(true);
-            expect(Countly._internals.userAgentSearchBotDetection("Chrome-Lighthouse")).to.equal(true);
-            expect(Countly._internals.userAgentSearchBotDetection("Lighthouse")).to.equal(true);
+            expect(Countbase._internals.userAgentSearchBotDetection("")).to.equal(false);
+            expect(Countbase._internals.userAgentSearchBotDetection("123")).to.equal(false);
+            expect(Countbase._internals.userAgentSearchBotDetection("Googlebot")).to.equal(true);
+            expect(Countbase._internals.userAgentSearchBotDetection("Google")).to.equal(false);
+            expect(Countbase._internals.userAgentSearchBotDetection("HeadlessChrome")).to.equal(true);
+            expect(Countbase._internals.userAgentSearchBotDetection("Chrome-Lighthouse")).to.equal(true);
+            expect(Countbase._internals.userAgentSearchBotDetection("Lighthouse")).to.equal(true);
         });
     });
     // userAgentData is not supported by all browsers yet so it is hard to test with consistency
     it("Check if currentUserAgentDataString override works", () => {
         hp.haltAndClearStorage(() => {
-            expect(Countly._internals.currentUserAgentDataString('123')).to.equal("123");
+            expect(Countbase._internals.currentUserAgentDataString('123')).to.equal("123");
         });
     });
 });

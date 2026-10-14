@@ -1,12 +1,12 @@
-declare module "countly-sdk-web" {
-  namespace Countly {
+declare module "countbase-sdk-web" {
+  namespace Countbase {
     /**
      * It initializes the SDK and exposes it to the window object. It should be called before any other SDK methods in sync implementations.
      * @param {object} config - Configuration object. Determines the SDK behavior. Some essential keys are:
      *
-     * app_key : "app key" from your Countly server application. (MANDATORY!)
+     * app_key : "app key" from your Countbase server application. (MANDATORY!)
      *
-     * url : Your Countly server URL. You may also use your own server URL or IP here. (MANDATORY!)
+     * url : Your Countbase server URL. You may also use your own server URL or IP here. (MANDATORY!)
      *
      * debug : Enables SDK logs to be printed into the browser console. (default: false)
      *
@@ -18,22 +18,22 @@ declare module "countly-sdk-web" {
      * Modify feature groups for consent management. Allows you to group multiple features under one feature group
      * @param {object} features - object to define feature name as key and core features as value
      * @example <caption>Adding all features under one group</caption>
-     * Countly.group_features({all:["sessions","events","views","scrolls","clicks","forms","crashes","attribution","users"]});
-     * //After this call Countly.add_consent("all") to allow all features
+     * Countbase.group_features({all:["sessions","events","views","scrolls","clicks","forms","crashes","attribution","users"]});
+     * //After this call Countbase.add_consent("all") to allow all features
      * @example <caption>Grouping features</caption>
-     * Countly.group_features({
+     * Countbase.group_features({
      *    activity:["sessions","events","views"],
      *    interaction:["scrolls","clicks","forms"]
      * });
-     * //After this call Countly.add_consent("activity") to allow "sessions","events","views"
-     * //or call Countly.add_consent("interaction") to allow "scrolls","clicks","forms"
-     * //or call Countly.add_consent("crashes") to allow some separate feature
+     * //After this call Countbase.add_consent("activity") to allow "sessions","events","views"
+     * //or call Countbase.add_consent("interaction") to allow "scrolls","clicks","forms"
+     * //or call Countbase.add_consent("crashes") to allow some separate feature
      */
     function group_features(features: object): void;
 
     /**
      * Check if consent is given for specific feature (either core feature of from custom feature group)
-     * @param {string} feature - name of the feature, possible values, "sessions","events","views","scrolls","clicks","forms","crashes","attribution","users" or custom provided through {@link Countly.group_features}
+     * @param {string} feature - name of the feature, possible values, "sessions","events","views","scrolls","clicks","forms","crashes","attribution","users" or custom provided through {@link Countbase.group_features}
      * @returns {Boolean} true if consent was given for the feature or false if it was not
      */
     function check_consent(feature: string): boolean;
@@ -45,11 +45,11 @@ declare module "countly-sdk-web" {
     }
 
     /**
-     * Countly SDK async queue
-     * You can push methods here to be executed after Countly SDK is fully loaded
+     * Countbase SDK async queue
+     * You can push methods here to be executed after Countbase SDK is fully loaded
      * @example
-     * Countly.q.push(['track_sessions']);
-     * Countly.q.push(['add_event',{
+     * Countbase.q.push(['track_sessions']);
+     * Countbase.q.push(['add_event',{
      *   "key": "click",
      *   "count": 1,
      *   "sum": 1.5,
@@ -70,7 +70,7 @@ declare module "countly-sdk-web" {
     function get_device_id_type(): DeviceIdType;
 
     /**
-     * Gives the current device id (of the CountlyClass instance)
+     * Gives the current device id (of the CountbaseClass instance)
      * @returns {string} device id
      */
     function get_device_id(): string;
@@ -89,13 +89,13 @@ declare module "countly-sdk-web" {
 
     /**
      * Add consent for specific feature, meaning, user allowed to track that data (either core feature or from custom feature group)
-     * @param {string | string[]} feature - name of the feature, possible values: "sessions", "events", "views", "scrolls", "clicks", "forms", "crashes", "attribution", "users", etc. or custom provided through {@link Countly.group_features}
+     * @param {string | string[]} feature - name of the feature, possible values: "sessions", "events", "views", "scrolls", "clicks", "forms", "crashes", "attribution", "users", etc. or custom provided through {@link Countbase.group_features}
      */
     function add_consent(feature: string | string[]): void;
 
     /**
      * Remove consent for specific feature, meaning, user opted out to track that data (either core feature or from custom feature group)
-     * @param {string | string[]} feature - name of the feature, possible values: "sessions", "events", "views", "scrolls", "clicks", "forms", "crashes", "attribution", "users", etc. or custom provided through {@link Countly.group_features}
+     * @param {string | string[]} feature - name of the feature, possible values: "sessions", "events", "views", "scrolls", "clicks", "forms", "crashes", "attribution", "users", etc. or custom provided through {@link Countbase.group_features}
      */
     function remove_consent(feature: string | string[]): void;
 
@@ -146,7 +146,7 @@ declare module "countly-sdk-web" {
 
     /**
      * Report custom event
-     * @param {Object} event - Countly {@link Event} object
+     * @param {Object} event - Countbase {@link Event} object
      * @param {string} event.key - name or id of the event
      * @param {number} [event.count=1] - how many times did event occur
      * @param {number} [event.sum] - sum to report with event (if any)
@@ -177,7 +177,7 @@ declare module "countly-sdk-web" {
 
     /**
      * End timed event
-     * @param {string | Object} event - event key if string or Countly event same as passed to {@link Countly.add_event}
+     * @param {string | Object} event - event key if string or Countbase event same as passed to {@link Countbase.add_event}
      */
     function end_event(
       event:
@@ -203,7 +203,7 @@ declare module "countly-sdk-web" {
 
     /**
      * Provide information about user
-     * @param {Object} user - Countly {@link UserDetails} object
+     * @param {Object} user - Countbase {@link UserDetails} object
      * @param {string} [user.name] - user's full name
      * @param {string} [user.username] - user's username or nickname
      * @param {string} [user.email] - user's email address
@@ -420,7 +420,7 @@ declare module "countly-sdk-web" {
     function track_forms(parent?: Object, trackHidden?: boolean): void;
 
     /**
-     * Collect possible user data from submitted forms. Add cly_user_ignore class to ignore inputs in forms or cly_user_{key} to collect data from this input as specified key, as cly_user_username to save collected value from this input as username property. If no class is provided, Countly SDK will try to determine type of information automatically.
+     * Collect possible user data from submitted forms. Add cly_user_ignore class to ignore inputs in forms or cly_user_{key} to collect data from this input as specified key, as cly_user_username to save collected value from this input as username property. If no class is provided, Countbase SDK will try to determine type of information automatically.
      * @param {Object} [parent] - DOM object whose children to track, by default it is document body
      * @param {boolean} [useCustom=false] - submit collected data as custom user properties, by default collects as main user properties
      */
@@ -434,8 +434,8 @@ declare module "countly-sdk-web" {
 
     /**
      * Report information about survey, NPS, or rating widget answers/results
-     * @param {Object} CountlyFeedbackWidget - it is the widget object retrieved from get_available_feedback_widgets
-     * @param {Object} CountlyWidgetData - it is the widget data object retrieved from getFeedbackWidgetData
+     * @param {Object} CountbaseFeedbackWidget - it is the widget object retrieved from get_available_feedback_widgets
+     * @param {Object} CountbaseWidgetData - it is the widget data object retrieved from getFeedbackWidgetData
      * @param {Object|null} widgetResult - it is the widget results that need to be reported, different for all widgets, if provided as null it means the widget was closed
      * widgetResult For NPS
      * Should include rating and comment from the NPS. Example:
@@ -460,8 +460,8 @@ declare module "countly-sdk-web" {
      *   }
      */
     function reportFeedbackWidgetManually(
-      CountlyFeedbackWidget: { _id: string; type: string },
-      CountlyWidgetData: object,
+      CountbaseFeedbackWidget: { _id: string; type: string },
+      CountbaseWidgetData: object,
       widgetResult:
         | { rating: number; comment?: string }
         | { [key: string]: string | number }
@@ -537,15 +537,15 @@ declare module "countly-sdk-web" {
 
     /**
      * Get feedback (nps, survey or rating) widget data, like questions, message etc.
-     * @param {Object} CountlyFeedbackWidget - Widget object, retrieved from 'get_available_feedback_widgets'
-     * @param {string} CountlyFeedbackWidget._id - The unique identifier of the widget
-     * @param {string} CountlyFeedbackWidget.type - The type of the widget (nps, survey, rating)
-     * @param {string} CountlyFeedbackWidget.name - The name of the widget
+     * @param {Object} CountbaseFeedbackWidget - Widget object, retrieved from 'get_available_feedback_widgets'
+     * @param {string} CountbaseFeedbackWidget._id - The unique identifier of the widget
+     * @param {string} CountbaseFeedbackWidget.type - The type of the widget (nps, survey, rating)
+     * @param {string} CountbaseFeedbackWidget.name - The name of the widget
      * @param {Function} callback - Callback function with two parameters, 1st for returned widget data, 2nd for error
      * @returns {void}
      */
     function getFeedbackWidgetData(
-      CountlyFeedbackWidget: { _id: string; type: string; name: string },
+      CountbaseFeedbackWidget: { _id: string; type: string; name: string },
       callback: (widgetData: Object, error: Error | null) => void
     ): void;
 
@@ -582,9 +582,9 @@ declare module "countly-sdk-web" {
     function getSearchQuery(): string;
   }
 
-  export default Countly;
+  export default Countbase;
 }
 
 interface Window {
-  Countly: any;
+  Countbase: any;
 }

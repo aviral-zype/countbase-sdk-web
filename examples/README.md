@@ -1,17 +1,17 @@
-# Countly Implementation Examples
+# Countbase Implementation Examples
 
-This folder is filled with examples of Countly implementations to help you to get an idea
-how to integrate Countly into your own personal project too.
+This folder is filled with examples of Countbase implementations to help you to get an idea
+how to integrate Countbase into your own personal project too.
 
 For all projects you should change 'YOUR_APP_KEY' value with your own application's app key, 'https://your.server.ly' value with your own server url. 
 
-If you have not separated 'examples' folder from the 'COUNTLY-SDK-WEB' project folder nor made some changes to file names in the periphery, any path to countly.js or the plugins must be still correct. 
+If you have not separated 'examples' folder from the 'COUNTBASE-SDK-WEB' project folder nor made some changes to file names in the periphery, any path to countbase.js or the plugins must be still correct. 
 
-But if you did make some changes you should check if the paths, like '../lib/countly.js', are correct or not inside the example files.
+But if you did make some changes you should check if the paths, like '../lib/countbase.js', are correct or not inside the example files.
 
 ## Generating Examples
 
-You can use the create_examples.py to generate example implementations of Countly Web SDK for React or Angular.
+You can use the create_examples.py to generate example implementations of Countbase Web SDK for React or Angular.
 It also can create an example that can be used to demonstrate the symbolication for Web SDK.
 
 To use the script:

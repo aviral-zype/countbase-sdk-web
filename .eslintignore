@@ -1,5 +1,5 @@
-lib/countly.js
-lib/countly.min.js
+lib/countbase.js
+lib/countbase.min.js
 plugin/boomerang/boomerang.min.js
 examples/
 node_modules

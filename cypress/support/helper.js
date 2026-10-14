@@ -1,4 +1,4 @@
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 
 const appKey = "YOUR_APP_KEY";
 const sWait = 100;
@@ -6,13 +6,13 @@ const sWait2 = 550;
 const mWait = 4000;
 const lWait = 10000;
 /**
- * resets Countly
- * @param {Function} callback - callback function that includes the Countly init and the tests
+ * resets Countbase
+ * @param {Function} callback - callback function that includes the Countbase init and the tests
  */
 function haltAndClearStorage(callback) {
-    if (Countly.halt !== undefined) {
-        Countly.halt();
-        Countly._internals.closeContent();
+    if (Countbase.halt !== undefined) {
+        Countbase.halt();
+        Countbase._internals.closeContent();
     }
     cy.wait(sWait).then(() => {
         cy.clearAllLocalStorage();
@@ -98,7 +98,7 @@ function interceptAndCheckRequests(requestType, requestUrl, endPoint, aliasParam
             callback(params);
         }
         req.reply(200, { result: "Success" }, {
-            "x-countly-rr": "2"
+            "x-countbase-rr": "2"
         });
     }).as(alias);
 
@@ -175,11 +175,11 @@ function events(omitList) {
     for (var i = 0, len = eventArray.length; i < len; i++) {
         if (omitList) {
             if (omitList.indexOf(eventArray[i].key) === -1) {
-                Countly.add_event(eventArray[i]);
+                Countbase.add_event(eventArray[i]);
             }
         }
         else {
-            Countly.add_event(eventArray[i]);
+            Countbase.add_event(eventArray[i]);
         }
     }
 }
@@ -189,9 +189,9 @@ function events(omitList) {
  *  Validates requests in the request queue for normal flow test
  * @param {Array} rq - request queue
  * @param {string} viewName - name of the view
- * @param {string} countlyAppKey - app key
+ * @param {string} countbaseAppKey - app key
 */
-function testNormalFlowInt(rq, viewName, countlyAppKey) {
+function testNormalFlowInt(rq, viewName, countbaseAppKey) {
     cy.log(JSON.stringify(rq));
     expect(rq.length).to.equal(14);
     const idType = rq[0].t;
@@ -276,7 +276,7 @@ function testNormalFlowInt(rq, viewName, countlyAppKey) {
 
     // each request should have same device id, device id type and app key
     rq.forEach((element, index) => {
-        expect(element.app_key).to.equal(countlyAppKey);
+        expect(element.app_key).to.equal(countbaseAppKey);
         expect(element.metrics).to.be.ok;
         expect(element.dow).to.exist;
         expect(element.hour).to.exist;
@@ -303,9 +303,9 @@ function testNormalFlowInt(rq, viewName, countlyAppKey) {
  *  Validates requests in the request queue for normal flow test
  * @param {Array} rq - request queue
  * @param {string} viewName - name of the view
- * @param {string} countlyAppKey - app key
+ * @param {string} countbaseAppKey - app key
 */
-function testNormalFlow(rq, viewName, countlyAppKey) {
+function testNormalFlow(rq, viewName, countbaseAppKey) {
     cy.log(rq);
     expect(rq.length).to.equal(8);
     const idType = rq[0].t;
@@ -349,7 +349,7 @@ function testNormalFlow(rq, viewName, countlyAppKey) {
     rq.forEach(element => {
         expect(element.device_id).to.equal(id);
         expect(element.t).to.equal(idType);
-        expect(element.app_key).to.equal(countlyAppKey);
+        expect(element.app_key).to.equal(countbaseAppKey);
         expect(element.metrics).to.be.ok;
         expect(element.dow).to.exist;
         expect(element.hour).to.exist;
@@ -444,63 +444,63 @@ function turnSearchStringToObject(searchString) {
 }
 
 function integrationMethods() {
-    const idType = Countly.get_device_id_type();
-    const id = Countly.get_device_id();
-    Countly.add_consent("events");
-    Countly.check_any_consent();
-    Countly.check_consent("events");
-    Countly.group_features({ all_features: ["events", "views", "crashes"] });
-    Countly.remove_consent("events");
-    Countly.disable_offline_mode();
-    Countly.add_event({ key: "test", count: 1, sum: 1, dur: 1, segmentation: { test: "test" } });
-    Countly.start_event("test");
-    Countly.cancel_event("gobbledygook");
-    Countly.end_event("test");
-    Countly.report_conversion("camp_id", "camp_user_id");
-    Countly.recordDirectAttribution("camp_id", "camp_user_id");
-    Countly.user_details({ name: "Test User", email: "test@example.com" });
-    Countly.userData.set("custom-property", "custom-value");
-    Countly.userData.unset("custom-property");
-    Countly.userData.set_once("unique-property", "unique-value");
-    Countly.userData.increment("counter");
-    Countly.userData.increment_by("counter", 5);
-    Countly.userData.multiply("value", 2);
-    Countly.userData.max("max-value", 100);
-    Countly.userData.min("min-value", 1);
-    Countly.userData.push("array-property", "new-value");
-    Countly.userData.push_unique("unique-array", "unique-item");
-    Countly.userData.pull("array-property", "value-to-remove");
-    Countly.userData.save();
-    Countly.report_trace({ name: "name", stz: 1, type: "type" });
-    Countly.log_error({ error: "error", stack: "stack" });
-    Countly.add_log("error");
-    Countly.enrollUserToAb(["test-key"]);
-    Countly.fetch_remote_config(["test-key"], [], (err, config) => console.log(config));
-    const remote = Countly.get_remote_config();
-    Countly.track_sessions();
-    Countly.track_pageview();
-    Countly.track_errors();
-    Countly.track_clicks();
-    Countly.track_scrolls();
-    Countly.track_links();
-    Countly.track_forms();
-    Countly.collect_from_forms();
-    Countly.collect_from_facebook();
-    Countly.opt_in();
-    Countly.begin_session();
-    Countly.session_duration(30);
-    Countly.end_session();
-    Countly.content.enterContentZone();
-    Countly.content.refreshContentZone();
-    Countly.content.exitContentZone();
-    Countly.change_id("new-device-id", true);
-    Countly.set_id("custom-device-id");
-    Countly.feedback.showRating();
-    Countly.feedback.showNPS();
-    Countly.feedback.showSurvey();
-    Countly.recordRatingWidgetWithID({ widget_id: "test-id", rating: 5 });
-    Countly.reportFeedbackWidgetManually({ _id: "test-id", type: "rating" }, {}, { rating: 5 });
-    Countly.get_available_feedback_widgets((widgets) => console.log(widgets));
+    const idType = Countbase.get_device_id_type();
+    const id = Countbase.get_device_id();
+    Countbase.add_consent("events");
+    Countbase.check_any_consent();
+    Countbase.check_consent("events");
+    Countbase.group_features({ all_features: ["events", "views", "crashes"] });
+    Countbase.remove_consent("events");
+    Countbase.disable_offline_mode();
+    Countbase.add_event({ key: "test", count: 1, sum: 1, dur: 1, segmentation: { test: "test" } });
+    Countbase.start_event("test");
+    Countbase.cancel_event("gobbledygook");
+    Countbase.end_event("test");
+    Countbase.report_conversion("camp_id", "camp_user_id");
+    Countbase.recordDirectAttribution("camp_id", "camp_user_id");
+    Countbase.user_details({ name: "Test User", email: "test@example.com" });
+    Countbase.userData.set("custom-property", "custom-value");
+    Countbase.userData.unset("custom-property");
+    Countbase.userData.set_once("unique-property", "unique-value");
+    Countbase.userData.increment("counter");
+    Countbase.userData.increment_by("counter", 5);
+    Countbase.userData.multiply("value", 2);
+    Countbase.userData.max("max-value", 100);
+    Countbase.userData.min("min-value", 1);
+    Countbase.userData.push("array-property", "new-value");
+    Countbase.userData.push_unique("unique-array", "unique-item");
+    Countbase.userData.pull("array-property", "value-to-remove");
+    Countbase.userData.save();
+    Countbase.report_trace({ name: "name", stz: 1, type: "type" });
+    Countbase.log_error({ error: "error", stack: "stack" });
+    Countbase.add_log("error");
+    Countbase.enrollUserToAb(["test-key"]);
+    Countbase.fetch_remote_config(["test-key"], [], (err, config) => console.log(config));
+    const remote = Countbase.get_remote_config();
+    Countbase.track_sessions();
+    Countbase.track_pageview();
+    Countbase.track_errors();
+    Countbase.track_clicks();
+    Countbase.track_scrolls();
+    Countbase.track_links();
+    Countbase.track_forms();
+    Countbase.collect_from_forms();
+    Countbase.collect_from_facebook();
+    Countbase.opt_in();
+    Countbase.begin_session();
+    Countbase.session_duration(30);
+    Countbase.end_session();
+    Countbase.content.enterContentZone();
+    Countbase.content.refreshContentZone();
+    Countbase.content.exitContentZone();
+    Countbase.change_id("new-device-id", true);
+    Countbase.set_id("custom-device-id");
+    Countbase.feedback.showRating();
+    Countbase.feedback.showNPS();
+    Countbase.feedback.showSurvey();
+    Countbase.recordRatingWidgetWithID({ widget_id: "test-id", rating: 5 });
+    Countbase.reportFeedbackWidgetManually({ _id: "test-id", type: "rating" }, {}, { rating: 5 });
+    Countbase.get_available_feedback_widgets((widgets) => console.log(widgets));
 }
 
 /**

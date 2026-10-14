@@ -1,30 +1,30 @@
 "use strict";
 
-/* global Countly */
+/* global Countbase */
 /*
-Countly APM based on Boomerang JS
+Countbase APM based on Boomerang JS
 Plugin being used - RT, AutoXHR, Continuity, NavigationTiming, ResourceTiming
 */
 (function cly_load_track_performance() {
     if (typeof window === "undefined") {
         return; // apm plugin needs window to be defined due to boomerang.js. Can't be used in webworkers
     }
-    var Countly = window.Countly || {};
-    Countly.onload = Countly.onload || [];
-    if (typeof Countly.CountlyClass === "undefined") {
-        return Countly.onload.push(function() {
+    var Countbase = window.Countbase || {};
+    Countbase.onload = Countbase.onload || [];
+    if (typeof Countbase.CountbaseClass === "undefined") {
+        return Countbase.onload.push(function() {
             cly_load_track_performance();
-            if (!Countly.track_performance && Countly.i) {
-                Countly.track_performance = Countly.i[Countly.app_key].track_performance;
+            if (!Countbase.track_performance && Countbase.i) {
+                Countbase.track_performance = Countbase.i[Countbase.app_key].track_performance;
             }
         });
     }
     /**
      *  Enables tracking performance through boomerang.js
-     *  @memberof Countly
+     *  @memberof Countbase
      *  @param {object} config - Boomerang js configuration
      */
-    Countly.CountlyClass.prototype.track_performance = function(config) {
+    Countbase.CountbaseClass.prototype.track_performance = function(config) {
         var self = this;
         config = config || {
             // page load timing
@@ -173,7 +173,7 @@ Plugin being used - RT, AutoXHR, Continuity, NavigationTiming, ResourceTiming
                 }
                 BOOMR.init(config);
                 BOOMR.t_end = new Date().getTime();
-                Countly.BOOMR = BOOMR;
+                Countbase.BOOMR = BOOMR;
                 initedBoomr = true;
                 self._internals.log("[INFO]", "[Boomerang] inited with config:[" + JSON.stringify(config) + "]");
             }

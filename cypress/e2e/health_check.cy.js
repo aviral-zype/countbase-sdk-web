@@ -1,9 +1,9 @@
 /* eslint-disable require-jsdoc */
-var Countly = require("../../lib/countly");
+var Countbase = require("../../lib/countbase");
 var hp = require("../support/helper");
 
 function initMain() {
-    Countly.init({
+    Countbase.init({
         app_key: "YOUR_APP_KEY",
         url: "https://your.domain.count.ly",
         test_mode: true
@@ -34,7 +34,7 @@ describe("Health Check tests", () => {
     });
     it("Check no health check is sent in offline mode", () => {
         hp.haltAndClearStorage(() => {
-            Countly.init({
+            Countbase.init({
                 app_key: "YOUR_APP_KEY",
                 url: "https://your.domain.count.ly",
                 test_mode: true,

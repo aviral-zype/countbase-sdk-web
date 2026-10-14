@@ -1,8 +1,8 @@
 <html>
 <head>
-<script type='text/javascript' src='../../lib/countly.js'></script>
+<script type='text/javascript' src='../../lib/countbase.js'></script>
 <script type='text/javascript'>
-Countly.init({
+Countbase.init({
 	app_key: "YOUR_APP_KEY",
 	url: "https://your.domain.count.ly",
 	utm: { aa: true },
@@ -12,7 +12,7 @@ Countly.init({
 		return "?utm_aa=hehe&utm_bb=hehe2";
 	}
 });
-Countly.track_pageview();
+Countbase.track_pageview();
 </script>
 </head>
 <body>

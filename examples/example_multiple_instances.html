@@ -3,68 +3,68 @@
 <head>
 	<!-- Page styling here -->
 	<link rel='stylesheet' type='text/css' href='./style/style.css'>
-	<p><a href='https://countly.com/'>Countly</a></p>
+	<p><a href='https://countly.com/'>Countbase</a></p>
 
-	<!--Countly script-->
-	<script type='text/javascript' src='../lib/countly.js'></script>
+	<!--Countbase script-->
+	<script type='text/javascript' src='../lib/countbase.js'></script>
 	<script type='text/javascript'>
-		Countly = Countly || {};
-		Countly.q = Countly.q || [];
+		Countbase = Countbase || {};
+		Countbase.q = Countbase.q || [];
 
-		//initializing first instance, which will be global Countly
-		const COUNTLY_SERVER_KEY = "https://your.server.ly";
-		const COUNTLY_APP_KEY = "YOUR_APP_KEY";
+		//initializing first instance, which will be global Countbase
+		const COUNTBASE_SERVER_KEY = "https://your.server.ly";
+		const COUNTBASE_APP_KEY = "YOUR_APP_KEY";
 
-		if (COUNTLY_APP_KEY === "YOUR_APP_KEY" || COUNTLY_SERVER_KEY === "https://your.server.ly") {
+		if (COUNTBASE_APP_KEY === "YOUR_APP_KEY" || COUNTBASE_SERVER_KEY === "https://your.server.ly") {
 			console.warn("Please do not use default set of app key and server url")
 		}
-		// initializing countly with params
-		Countly.init({
-			app_key: COUNTLY_APP_KEY,
-			url: COUNTLY_SERVER_KEY, //your server goes here
+		// initializing countbase with params
+		Countbase.init({
+			app_key: COUNTBASE_APP_KEY,
+			url: COUNTBASE_SERVER_KEY, //your server goes here
 			debug: true
 		})
 		//report event to first app
-		Countly.add_event({
+		Countbase.add_event({
 			key: "first_app"
 		});
 
 
 
 		//initialize second instance for another app synchronously
-		const COUNTLY_SERVER_KEY2 = "https://your.server.ly";
-		const COUNTLY_APP_KEY2 = "YOUR_APP_KEY2";
+		const COUNTBASE_SERVER_KEY2 = "https://your.server.ly";
+		const COUNTBASE_APP_KEY2 = "YOUR_APP_KEY2";
 
-		if (COUNTLY_APP_KEY2 === "YOUR_APP_KEY2" || COUNTLY_SERVER_KEY2 === "https://your.server.ly") {
+		if (COUNTBASE_APP_KEY2 === "YOUR_APP_KEY2" || COUNTBASE_SERVER_KEY2 === "https://your.server.ly") {
 			console.warn("Please do not use default set of app key and server url")
 		}
-		// initializing countly with params
-		var Countly2 = Countly.init({
-			app_key: COUNTLY_APP_KEY2,
-			url: COUNTLY_SERVER_KEY2, //your server goes here
+		// initializing countbase with params
+		var Countbase2 = Countbase.init({
+			app_key: COUNTBASE_APP_KEY2,
+			url: COUNTBASE_SERVER_KEY2, //your server goes here
 			debug: true
 		});
 
 		//report event to second app
-		Countly2.add_event({
+		Countbase2.add_event({
 			key: "second_app"
 		});
 
-		const COUNTLY_SERVER_KEY3 = "https://your.server.ly";
-		const COUNTLY_APP_KEY3 = "YOUR_APP_KEY3";
+		const COUNTBASE_SERVER_KEY3 = "https://your.server.ly";
+		const COUNTBASE_APP_KEY3 = "YOUR_APP_KEY3";
 
-		if (COUNTLY_APP_KEY3 === "YOUR_APP_KEY3" || COUNTLY_SERVER_KEY2 === "https://your.server.ly") {
+		if (COUNTBASE_APP_KEY3 === "YOUR_APP_KEY3" || COUNTBASE_SERVER_KEY2 === "https://your.server.ly") {
 			console.warn("Please do not use default set of app key and server url")
 		}
 
 		//initialize third instance for another app asynchronously
-		Countly.q.push(["init", {
-			app_key: COUNTLY_APP_KEY3, //must have different APP key
-			url: COUNTLY_SERVER_KEY3, //your server goes here
+		Countbase.q.push(["init", {
+			app_key: COUNTBASE_APP_KEY3, //must have different APP key
+			url: COUNTBASE_SERVER_KEY3, //your server goes here
 			debug: true
 		}])
 		//report event to third app asynchronously by passing app key as first arg
-		Countly.q.push([COUNTLY_APP_KEY3, "add_event", {
+		Countbase.q.push([COUNTBASE_APP_KEY3, "add_event", {
 			key: "third_app"
 		}]);
 	</script>
@@ -78,7 +78,7 @@
 	</div>
 
 	<center>
-		<img src="./images/team_countly.jpg" id="wallpaper" />
+		<img src="./images/team_countbase.jpg" id="wallpaper" />
 	</center>
 </body>
 
