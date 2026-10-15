@@ -43,7 +43,7 @@ Countbase.q.push(['track_pageview']);
  var cly = document.createElement('script'); cly.type = 'text/javascript'; 
  cly.async = true;
  // Enter url of script here (see below for other option)
- cly.src = 'https://cdn.jsdelivr.net/npm/countbase-sdk-web@latest/lib/countbase.min.js';
+ cly.src = 'https://cdn.jsdelivr.net/gh/aviral-zype/countbase-sdk-web@v26.1.2/lib/countbase.min.js';
  cly.onload = function(){Countbase.init()};
  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(cly, s);
 })();

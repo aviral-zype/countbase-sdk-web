@@ -65,7 +65,7 @@ npx cypress run          # end-to-end tests
 ```
 
 To release: bump `version` in `package.json` (and the version in `lib/countbase.js` if the
-SDK code changed), commit, then `git tag v<version> && git push origin main v<version>`.
+SDK code changed), update the pinned `@v<version>` jsDelivr URLs in `lib/` (`git grep jsdelivr`), commit, then `git tag v<version> && git push origin main v<version>`.
 Apps pick it up by changing the `#v<version>` in their dependency.
 
 ## License

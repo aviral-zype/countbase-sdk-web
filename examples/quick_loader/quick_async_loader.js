@@ -145,7 +145,7 @@
         }
 
         initConfig = config;
-        var sdkUrl = c.sdk_url || "https://cdn.jsdelivr.net/npm/countbase-sdk-web@latest/lib/countbase.min.js";
+        var sdkUrl = c.sdk_url || "https://cdn.jsdelivr.net/gh/aviral-zype/countbase-sdk-web@v26.1.2/lib/countbase.min.js";
         loadSdk(sdkUrl);
         return c;
     };
