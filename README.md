@@ -1,7 +1,5 @@
 # Countbase Web SDK
 
-[![npm version](https://img.shields.io/npm/v/countbase-sdk-web.svg)](https://www.npmjs.com/package/countbase-sdk-web)
-
 Analytics, crash reporting, remote config and feedback widgets for websites and web apps,
 reporting to a Countbase server.
 
@@ -10,8 +8,18 @@ Countbase Web SDK is a fork of the [Countly Web SDK](https://github.com/Countly/
 
 ## Install
 
+The package is installed straight from this GitHub repository; each release is a git tag.
+
 ```bash
-npm install countbase-sdk-web
+npm install github:aviral-zype/countbase-sdk-web#v26.1.2
+# or
+yarn add countbase-sdk-web@github:aviral-zype/countbase-sdk-web#v26.1.2
+```
+
+which puts this in `package.json`:
+
+```json
+"countbase-sdk-web": "github:aviral-zype/countbase-sdk-web#v26.1.2"
 ```
 
 ```js
@@ -30,7 +38,7 @@ Countbase.add_event({ key: "signup", count: 1, segmentation: { plan: "pro" } });
 Or load it from a CDN without a build step:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/countbase-sdk-web@latest/lib/countbase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/aviral-zype/countbase-sdk-web@v26.1.2/lib/countbase.min.js"></script>
 <script>
   Countbase.init({ app_key: "YOUR_APP_KEY", url: "https://countbase.example.com" });
   Countbase.track_sessions();
@@ -43,7 +51,7 @@ applies. More examples are in [`examples/`](examples/).
 
 ## Migrating from countly-sdk-web
 
-- Replace the package `countly-sdk-web` with `countbase-sdk-web`.
+- Replace the dependency `countly-sdk-web` with `countbase-sdk-web` from this repository (see Install).
 - Rename the global/import `Countly` to `Countbase` (including `Countbase.q` in async snippets).
 - Data stored in the browser (`cly_*` keys) and the server protocol are unchanged, so existing
   visitors keep their device IDs.
@@ -56,8 +64,9 @@ npx eslint --ignore-path .eslintignore .
 npx cypress run          # end-to-end tests
 ```
 
-Releases are published to npm by GitHub Actions when a `v<version>` tag is pushed
-(see `.github/workflows/publish.yml`).
+To release: bump `version` in `package.json` (and the version in `lib/countbase.js` if the
+SDK code changed), commit, then `git tag v<version> && git push origin main v<version>`.
+Apps pick it up by changing the `#v<version>` in their dependency.
 
 ## License
 
